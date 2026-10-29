@@ -51,9 +51,9 @@ def main():
         "- [Lichess opening names](https://github.com/lichess-org/chess-openings) (CC0) give each game its opening name\n"
         "- [chess.js](https://github.com/jhlywa/chess.js) replays the games in your browser\n"
         "- [Hugo](https://gohugo.io/) builds the site\n")
-    # cover image: a darkened crop of the White big picture
+    # cover image: assets/images/header-fuji.jpg is a chosen photo (used by content/en/_index.md); the tree crop below is only a fallback
     src = os.path.join(ROOT, "build", "white", "big-picture.png")
-    if os.path.exists(src):
+    if os.path.exists(src) and not os.path.exists(os.path.join(ROOT, "assets", "images", "header-fuji.jpg")):
         im = Image.open(src).convert("RGB"); W, H = im.size
         cw = min(W, 2400); chh = int(cw * 1338 / 2400); x0 = max(0, (W - cw) // 2)
         crop = im.crop((x0, 0, x0 + cw, min(H, chh))).resize((2400, 1338))
