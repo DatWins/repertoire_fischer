@@ -54,8 +54,8 @@ def draw(start, out_png, min_games, max_plies, img_dir, size=260, label_pt=34):
             nb = b.copy(); mv = nb.parse_san(k.san); nb.push(mv)
             num = (k.ply + 1) // 2
             mvtxt = f"{num}.{k.san}" if k.ply % 2 else f"{num}...{k.san}"
-            lab = (f'<<FONT COLOR="#1a4fd0" POINT-SIZE="{label_pt}"><B>{mvtxt}</B></FONT><BR/>'
-                   f'<FONT COLOR="#555555" POINT-SIZE="{int(label_pt*0.72)}">{k.n} game{"" if k.n == 1 else "s"} · {k.score:.0%}</FONT>>')
+            lab = (f'<<FONT COLOR="#1a4fd0" POINT-SIZE="{label_pt}"><B>{mvtxt}</B>&#160;&#160;&#160;&#160;</FONT><BR/>'
+                   f'<FONT COLOR="#555555" POINT-SIZE="{int(label_pt*0.72)}">{k.n} game{"" if k.n == 1 else "s"} · {k.score:.0%}&#160;&#160;&#160;&#160;</FONT>>')
             dot.edge(nid(x), nid(k), xlabel=lab, penwidth=f"{1.5 + 7*math.sqrt(k.n/top):.1f}")
             stack.append((k, nb, mv))
     base_name = os.path.splitext(out_png)[0]

@@ -34,7 +34,7 @@ def make(slug, node, title, max_plies, cap, back, backtxt, only=None):
     q.putpalette(pal)
     small = os.path.join(BUILD, f"{slug}.q.png"); q.save(small, optimize=True)
     out = os.path.join(common.OUT, "trees", slug); os.makedirs(out, exist_ok=True)
-    w = 1000; im.resize((w, int(w * im.size[1] / im.size[0])), Image.LANCZOS).save(os.path.join(out, "preview.jpg"), quality=82, optimize=True)
+    w = min(1000, im.size[0]); im.resize((w, int(w * im.size[1] / im.size[0])), Image.LANCZOS).save(os.path.join(out, "preview.jpg"), quality=82, optimize=True)
     tpl = open(os.path.join(common.HERE, "viewer_template.html"), encoding="utf-8").read()
     html = (tpl.replace("__IMG__", "data:image/png;base64," + base64.b64encode(open(small, "rb").read()).decode())
                .replace("__TITLE__", title).replace("__BACK__", back).replace("__BACKTXT__", backtxt))
