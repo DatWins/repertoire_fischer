@@ -20,7 +20,13 @@ def make(slug, node, title, max_plies, cap, back, backtxt, only=None):
     m = auto_min(node, max_plies, cap)
     nodes = D.count_nodes(node, m, max_plies)
     png = os.path.join(BUILD, f"{slug}.png")
-    D.draw(node, png, m, max_plies, IMG)
+    for depth in (max_plies, 12, 10, 8):      # graphviz's ortho router sometimes overflows on tangled trees: draw shallower
+        try:
+            D.draw(node, png, m, depth, IMG); break
+        except Exception as e:
+            print(f"  {slug}: draw failed at depth {depth} ({type(e).__name__}), retrying shallower", flush=True)
+    else:
+        raise RuntimeError(f"could not draw {slug}")
     im = Image.open(png).convert("RGB")
     q = im.quantize(colors=64, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
     pal = q.getpalette()[:64 * 3]

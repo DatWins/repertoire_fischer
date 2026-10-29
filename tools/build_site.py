@@ -1,7 +1,7 @@
 """Stage 4: join the White and Black runs into the home page.
 Run from the repo root after both:  SIDE=white ... ; SIDE=black ...   then   python tools/build_site.py"""
 import os, json
-from PIL import Image
+from PIL import Image, ImageFilter
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 P = "Fischer"; FULL = "Bobby Fischer"
 
@@ -57,7 +57,7 @@ def main():
         im = Image.open(src).convert("RGB"); W, H = im.size
         cw = min(W, 2400); chh = int(cw * 1338 / 2400); x0 = max(0, (W - cw) // 2)
         crop = im.crop((x0, 0, x0 + cw, min(H, chh))).resize((2400, 1338))
-        out = Image.blend(crop, Image.new("RGB", crop.size, (20, 35, 50)), 0.72)
+        out = Image.blend(crop.filter(ImageFilter.GaussianBlur(9)), Image.new("RGB", crop.size, (20, 35, 50)), 0.86)
         os.makedirs(os.path.join(ROOT, "assets", "images"), exist_ok=True)
         out.save(os.path.join(ROOT, "assets", "images", "cover-image.jpg"), quality=80, optimize=True)
     print("site content written")

@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.e4 e5 – Fischer with White</title>
+<style>
+:root{
+  --fs:21px;
+  --paper:#fbfaf7; --ink:#1d1f22; --muted:#5d6670; --line:#e2e0da; --side:#f2f0eb;
+  --main:#1f4fa3; --var:#2b2f36; --hl:#ffe08a; --hlink:#e8eefb;
+  --light:#dee3e6; --dark:#8ca2ad; --lm:rgba(155,199,0,.45);
+  --btn:#ffffff; --btnb:#cfd5db; --win:#2f6b3a; --loss:#a33a2a;
+}
+:root[data-theme="dark"]{
+  --paper:#16191d; --ink:#e4e6e9; --muted:#9aa3ad; --line:#2c3238; --side:#1d2126;
+  --main:#86b4ff; --var:#d5d9de; --hl:#6b5a1e; --hlink:#25324a;
+  --btn:#232930; --btnb:#3a434c; --win:#7fcf93; --loss:#f08a7a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;font-size:var(--fs);line-height:1.6}
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:8px 16px;background:var(--side);border-bottom:1px solid var(--line);font-family:system-ui,"Segoe UI",sans-serif;font-size:15px}
+.top a.lib{color:var(--main);text-decoration:none;font-weight:600;white-space:nowrap}
+.top .t{font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+button,select,input{font:inherit;font-family:system-ui,"Segoe UI",sans-serif;background:var(--btn);color:var(--ink);border:1px solid var(--btnb);border-radius:7px;padding:6px 12px}
+button{cursor:pointer;min-width:40px}
+button:hover{border-color:var(--main)}
+button:disabled{opacity:.35;cursor:default}
+.wrap{display:grid;grid-template-columns:240px minmax(0,1fr) auto;align-items:start}
+nav.toc{position:sticky;top:49px;height:calc(100vh - 49px);overflow:auto;padding:18px 12px;border-right:1px solid var(--line);background:var(--side);font-family:system-ui,"Segoe UI",sans-serif;font-size:14px}
+nav.toc .h{font-weight:700;color:var(--muted);text-transform:uppercase;font-size:12px;letter-spacing:.06em;margin-bottom:8px}
+nav.toc a{display:block;padding:5px 8px;border-radius:6px;color:var(--ink);text-decoration:none;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+nav.toc a:hover,nav.toc a.on{background:var(--hlink);color:var(--main)}
+nav.toc a .r{color:var(--muted);font-size:12px}
+main{padding:28px 40px 120px;max-width:44em;margin:0 auto;width:100%}
+aside.bp{position:sticky;top:49px;padding:16px 20px;border-left:1px solid var(--line);height:calc(100vh - 49px);overflow:auto;width:calc(var(--bw) + 70px)}
+:root{--bw:min(44vw, calc(100vh - 290px), 680px)}
+.kicker{font-family:system-ui,"Segoe UI",sans-serif;font-size:.7em;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+h1{font-family:system-ui,"Segoe UI",sans-serif;font-size:2.3em;line-height:1.1;margin:.2em 0 .15em}
+.dek{color:var(--main);font-size:1.15em;margin:.2em 0}
+.stats{font-family:system-ui,"Segoe UI",sans-serif;font-size:.78em;color:var(--muted);margin:.5em 0 1em}
+.stats b{color:var(--ink)}
+h2{font-family:system-ui,"Segoe UI",sans-serif;font-size:1.25em;margin:1.8em 0 .3em;padding-top:.5em;border-top:2px solid var(--line);cursor:pointer}
+h2:hover{color:var(--main)}
+p{margin:.65em 0}
+.gamehead{font-size:.88em;line-height:1.5;margin:.15em 0;color:var(--muted)}
+.gamehead b{color:var(--ink)}
+.opn{font-family:system-ui,"Segoe UI",sans-serif;font-size:.72em;font-weight:600;color:var(--muted);margin:.3em 0 0}
+a.mv{cursor:pointer;border-radius:4px;padding:0 2px;color:var(--var);text-decoration:none}
+a.mv:hover{background:var(--hlink)}
+a.mv.cur{background:var(--hl)}
+p.ml{font-weight:700;font-size:1.08em;margin:.7em 0 .3em}
+p.ml a.mv{color:var(--main)}
+.res{font-family:system-ui,"Segoe UI",sans-serif;font-weight:700;font-size:.85em;color:var(--muted)}
+.tree{display:block;margin:.8em 0 .3em}
+.tree img{display:block;width:100%;height:auto;max-height:420px;object-fit:contain;object-position:top;border-radius:10px;box-shadow:0 0 0 5px #3b2416;background:#fff}
+.tree span{font-family:system-ui,"Segoe UI",sans-serif;font-size:.7em;color:var(--main);font-weight:600}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin:.8em 0 .4em;font-family:system-ui,"Segoe UI",sans-serif;font-size:15px}
+.tools input{flex:1;min-width:12em}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:.6em 0;font-family:system-ui,"Segoe UI",sans-serif;font-size:14px}
+.chips button{border-radius:999px;padding:4px 12px}
+.chips button.on{background:var(--main);border-color:var(--main);color:#fff}
+.chips small{opacity:.7}
+.more{display:block;margin:2em auto;font-size:16px;padding:10px 22px}
+.empty{color:var(--muted);font-style:italic}
+/* board */
+.bwrap{display:grid;grid-template-columns:auto 1fr;grid-template-rows:1fr auto;width:max-content}
+.bd{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);aspect-ratio:1;border:2px solid #5b6f79;user-select:none}
+.sq{position:relative}
+.sq.l{background:var(--light)} .sq.d{background:var(--dark)}
+.sq.lm::after{content:"";position:absolute;inset:0;background:var(--lm)}
+.pc{position:absolute;inset:0;background-size:100% 100%;z-index:1}
+.rk{display:grid;grid-template-rows:repeat(8,minmax(0,1fr));line-height:1;font-family:system-ui,sans-serif;color:var(--muted);text-align:center;padding-right:5px}
+.fl{grid-column:2;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));line-height:1.4;font-family:system-ui,sans-serif;color:var(--muted);text-align:center}
+.rk span{display:flex;align-items:center}
+#live .bd{width:var(--bw)} #live .rk,#live .fl{font-size:14px}
+.bhead{font-family:system-ui,"Segoe UI",sans-serif;font-size:15px;color:var(--muted);margin-bottom:8px;min-height:1.4em;display:flex;justify-content:space-between;gap:10px}
+.bhead b{color:var(--ink);font-size:17px;white-space:nowrap}
+.ctrls{display:flex;gap:6px;margin:12px 0 0 22px;flex-wrap:wrap}
+.ctrls button{font-size:18px;padding:5px 12px}
+.gnav{display:flex;gap:6px;margin:8px 0 0 22px;font-size:14px}
+.gnav button{font-size:14px;padding:4px 10px}
+.msg{margin:8px 0 0 22px;font-family:system-ui,"Segoe UI",sans-serif;font-size:14px;color:var(--muted)}
+.tog{display:none}
+@media (max-width:1100px){
+  .top{height:49px;padding:0 10px;gap:6px}
+  .top button{padding:5px 9px;min-width:0}
+  .tog{display:inline-block}
+  .wrap{grid-template-columns:1fr}
+  nav.toc{display:none}
+  aside.bp{order:-1;position:sticky;top:49px;z-index:10;height:auto;width:auto;border-left:0;border-bottom:1px solid var(--line);background:var(--paper);padding:8px 12px 10px}
+  :root{--bw:min(calc(100vw - 56px), 38vh, 560px);--bw:min(calc(100vw - 56px), 38svh, 560px)}
+  .bhead{font-size:13px;margin-bottom:4px;align-items:baseline}
+  .bhead #who{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .bhead b{font-size:15px}
+  #live{display:flex;justify-content:center}
+  #live .rk,#live .fl{font-size:11px}
+  .ctrls,.gnav,.msg{margin-left:0;justify-content:center;text-align:center}
+  .ctrls{margin-top:8px}
+  .ctrls button{font-size:17px;padding:4px 0;flex:1;max-width:64px}
+  .gnav{margin-top:4px}
+  .msg{margin-top:4px;font-size:12px}
+  main{padding:16px 16px 80px}
+  body.hideb #live,body.hideb .bhead,body.hideb .gnav{display:none}
+}
+@media (max-width:480px){ .top .t{display:none} .top a.lib{flex:1} }
+</style>
+<style>.pc.wP{background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PHBhdGggZD0iTTIyLjUgOWMtMi4yMSAwLTQgMS43OS00IDQgMCAuODkuMjkgMS43MS43OCAyLjM4QzE3LjMzIDE2LjUgMTYgMTguNTkgMTYgMjFjMCAyLjAzLjk0IDMuODQgMi40MSA1LjAzLTMgMS4wNi03LjQxIDUuNTUtNy40MSAxMy40N2gyM2MwLTcuOTItNC40MS0xMi40MS03LjQxLTEzLjQ3IDEuNDctMS4xOSAyLjQxLTMgMi40MS01LjAzIDAtMi40MS0xLjMzLTQuNS0zLjI4LTUuNjIuNDktLjY3Ljc4LTEuNDkuNzgtMi4zOCAwLTIuMjEtMS43OS00LTQtNHoiIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==')}
+.pc.wB{background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxnIGZpbGw9IiNmZmYiIHN0cm9rZS1saW5lY2FwPSJidXR0Ij48cGF0aCBkPSJNOSAzNmMzLjM5LS45NyAxMC4xMS40MyAxMy41LTIgMy4zOSAyLjQzIDEwLjExIDEuMDMgMTMuNSAyIDAgMCAxLjY1LjU0IDMgMi0uNjguOTctMS42NS45OS0zIC41LTMuMzktLjk3LTEwLjExLjQ2LTEzLjUtMS0zLjM5IDEuNDYtMTAuMTEuMDMtMTMuNSAxLTEuMzU0LjQ5LTIuMzIzLjQ3LTMtLjUgMS4zNTQtMS45NCAzLTIgMy0yeiIvPjxwYXRoIGQ9Ik0xNSAzMmMyLjUgMi41IDEyLjUgMi41IDE1IDAgLjUtMS41IDAtMiAwLTIgMC0yLjUtMi41LTQtMi41LTQgNS41LTEuNSA2LTExLjUtNS0xNS41LTExIDQtMTAuNSAxNC01IDE1LjUgMCAwLTIuNSAxLjUtMi41IDQgMCAwLS41LjUgMCAyeiIvPjxwYXRoIGQ9Ik0yNSA4YTIuNSAyLjUgMCAxIDEtNSAwIDIuNSAyLjUgMCAxIDEgNSAweiIvPjwvZz48cGF0aCBkPSJNMTcuNSAyNmgxME0xNSAzMGgxNW0tNy41LTE0LjV2NU0yMCAxOGg1IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PC9nPjwvc3ZnPg==')}
+.pc.wN{background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMiAxMGMxMC41IDEgMTYuNSA4IDE2IDI5SDE1YzAtOSAxMC02LjUgOC0yMSIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0yNCAxOGMuMzggMi45MS01LjU1IDcuMzctOCA5LTMgMi0yLjgyIDQuMzQtNSA0LTEuMDQyLS45NCAxLjQxLTMuMDQgMC0zLTEgMCAuMTkgMS4yMy0xIDItMSAwLTQuMDAzIDEtNC00IDAtMiA2LTEyIDYtMTJzMS44OS0xLjkgMi0zLjVjLS43My0uOTk0LS41LTItLjUtMyAxLTEgMyAyLjUgMyAyLjVoMnMuNzgtMS45OTIgMi41LTNjMSAwIDEgMyAxIDMiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNOS41IDI1LjVhLjUuNSAwIDEgMS0xIDAgLjUuNSAwIDEgMSAxIDB6bTUuNDMzLTkuNzVhLjUgMS41IDMwIDEgMS0uODY2LS41LjUgMS41IDMwIDEgMSAuODY2LjV6IiBmaWxsPSIjMDAwIi8+PC9nPjwvc3ZnPg==')}
+.pc.wR{background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik05IDM5aDI3di0zSDl2M3ptMy0zdi00aDIxdjRIMTJ6bS0xLTIyVjloNHYyaDVWOWg1djJoNVY5aDR2NSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMzQgMTRsLTMgM0gxNGwtMy0zIi8+PHBhdGggZD0iTTMxIDE3djEyLjVIMTRWMTciIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PHBhdGggZD0iTTMxIDI5LjVsMS41IDIuNWgtMjBsMS41LTIuNSIvPjxwYXRoIGQ9Ik0xMSAxNGgyMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjwvZz48L3N2Zz4=')}
+.pc.wQ{background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik04IDEyYTIgMiAwIDEgMS00IDAgMiAyIDAgMSAxIDQgMHptMTYuNS00LjVhMiAyIDAgMSAxLTQgMCAyIDIgMCAxIDEgNCAwek00MSAxMmEyIDIgMCAxIDEtNCAwIDIgMiAwIDEgMSA0IDB6TTE2IDguNWEyIDIgMCAxIDEtNCAwIDIgMiAwIDEgMSA0IDB6TTMzIDlhMiAyIDAgMSAxLTQgMCAyIDIgMCAxIDEgNCAweiIvPjxwYXRoIGQ9Ik05IDI2YzguNS0xLjUgMjEtMS41IDI3IDBsMi0xMi03IDExVjExbC01LjUgMTMuNS0zLTE1LTMgMTUtNS41LTE0VjI1TDcgMTRsMiAxMnoiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTkgMjZjMCAyIDEuNSAyIDIuNSA0IDEgMS41IDEgMSAuNSAzLjUtMS41IDEtMS41IDIuNS0xLjUgMi41LTEuNSAxLjUuNSAyLjUuNSAyLjUgNi41IDEgMTYuNSAxIDIzIDAgMCAwIDEuNS0xIDAtMi41IDAgMCAuNS0xLjUtMS0yLjUtLjUtMi41LS41LTIgLjUtMy41IDEtMiAyLjUtMiAyLjUtNC04LjUtMS41LTE4LjUtMS41LTI3IDB6IiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjxwYXRoIGQ9Ik0xMS41IDMwYzMuNS0xIDE4LjUtMSAyMiAwTTEyIDMzLjVjNi0xIDE1LTEgMjEgMCIgZmlsbD0ibm9uZSIvPjwvZz48L3N2Zz4=')}
+.pc.wK{background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMi41IDExLjYzVjZNMjAgOGg1IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PHBhdGggZD0iTTIyLjUgMjVzNC41LTcuNSAzLTEwLjVjMCAwLTEtMi41LTMtMi41cy0zIDIuNS0zIDIuNWMtMS41IDMgMyAxMC41IDMgMTAuNSIgZmlsbD0iI2ZmZiIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMTEuNSAzN2M1LjUgMy41IDE1LjUgMy41IDIxIDB2LTdzOS00LjUgNi0xMC41Yy00LTYuNS0xMy41LTMuNS0xNiA0VjI3di0zLjVjLTMuNS03LjUtMTMtMTAuNS0xNi00LTMgNiA1IDEwIDUgMTBWMzd6IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTExLjUgMzBjNS41LTMgMTUuNS0zIDIxIDBtLTIxIDMuNWM1LjUtMyAxNS41LTMgMjEgMG0tMjEgMy41YzUuNS0zIDE1LjUtMyAyMSAwIi8+PC9nPjwvc3ZnPg==')}
+.pc.bP{background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PHBhdGggZD0iTTIyLjUgOWMtMi4yMSAwLTQgMS43OS00IDQgMCAuODkuMjkgMS43MS43OCAyLjM4QzE3LjMzIDE2LjUgMTYgMTguNTkgMTYgMjFjMCAyLjAzLjk0IDMuODQgMi40MSA1LjAzLTMgMS4wNi03LjQxIDUuNTUtNy40MSAxMy40N2gyM2MwLTcuOTItNC40MS0xMi40MS03LjQxLTEzLjQ3IDEuNDctMS4xOSAyLjQxLTMgMi40MS01LjAzIDAtMi40MS0xLjMzLTQuNS0zLjI4LTUuNjIuNDktLjY3Ljc4LTEuNDkuNzgtMi4zOCAwLTIuMjEtMS43OS00LTQtNHoiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==')}
+.pc.bB{background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxnIGZpbGw9IiMwMDAiIHN0cm9rZS1saW5lY2FwPSJidXR0Ij48cGF0aCBkPSJNOSAzNmMzLjM5LS45NyAxMC4xMS40MyAxMy41LTIgMy4zOSAyLjQzIDEwLjExIDEuMDMgMTMuNSAyIDAgMCAxLjY1LjU0IDMgMi0uNjguOTctMS42NS45OS0zIC41LTMuMzktLjk3LTEwLjExLjQ2LTEzLjUtMS0zLjM5IDEuNDYtMTAuMTEuMDMtMTMuNSAxLTEuMzU0LjQ5LTIuMzIzLjQ3LTMtLjUgMS4zNTQtMS45NCAzLTIgMy0yeiIvPjxwYXRoIGQ9Ik0xNSAzMmMyLjUgMi41IDEyLjUgMi41IDE1IDAgLjUtMS41IDAtMiAwLTIgMC0yLjUtMi41LTQtMi41LTQgNS41LTEuNSA2LTExLjUtNS0xNS41LTExIDQtMTAuNSAxNC01IDE1LjUgMCAwLTIuNSAxLjUtMi41IDQgMCAwLS41LjUgMCAyeiIvPjxwYXRoIGQ9Ik0yNSA4YTIuNSAyLjUgMCAxIDEtNSAwIDIuNSAyLjUgMCAxIDEgNSAweiIvPjwvZz48cGF0aCBkPSJNMTcuNSAyNmgxME0xNSAzMGgxNW0tNy41LTE0LjV2NU0yMCAxOGg1IiBzdHJva2U9IiNlY2VjZWMiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48L2c+PC9zdmc+')}
+.pc.bN{background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMiAxMGMxMC41IDEgMTYuNSA4IDE2IDI5SDE1YzAtOSAxMC02LjUgOC0yMSIgZmlsbD0iIzAwMCIvPjxwYXRoIGQ9Ik0yNCAxOGMuMzggMi45MS01LjU1IDcuMzctOCA5LTMgMi0yLjgyIDQuMzQtNSA0LTEuMDQyLS45NCAxLjQxLTMuMDQgMC0zLTEgMCAuMTkgMS4yMy0xIDItMSAwLTQuMDAzIDEtNC00IDAtMiA2LTEyIDYtMTJzMS44OS0xLjkgMi0zLjVjLS43My0uOTk0LS41LTItLjUtMyAxLTEgMyAyLjUgMyAyLjVoMnMuNzgtMS45OTIgMi41LTNjMSAwIDEgMyAxIDMiIGZpbGw9IiMwMDAiLz48cGF0aCBkPSJNOS41IDI1LjVhLjUuNSAwIDEgMS0xIDAgLjUuNSAwIDEgMSAxIDB6bTUuNDMzLTkuNzVhLjUgMS41IDMwIDEgMS0uODY2LS41LjUgMS41IDMwIDEgMSAuODY2LjV6IiBmaWxsPSIjZWNlY2VjIiBzdHJva2U9IiNlY2VjZWMiLz48cGF0aCBkPSJNMjQuNTUgMTAuNGwtLjQ1IDEuNDUuNS4xNWMzLjE1IDEgNS42NSAyLjQ5IDcuOSA2Ljc1UzM1Ljc1IDI5LjA2IDM1LjI1IDM5bC0uMDUuNWgyLjI1bC4wNS0uNWMuNS0xMC4wNi0uODgtMTYuODUtMy4yNS0yMS4zNC0yLjM3LTQuNDktNS43OS02LjY0LTkuMTktNy4xNmwtLjUxLS4xeiIgZmlsbD0iI2VjZWNlYyIgc3Ryb2tlPSJub25lIi8+PC9nPjwvc3ZnPg==')}
+.pc.bR{background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik05IDM5aDI3di0zSDl2M3ptMy41LTdsMS41LTIuNWgxN2wxLjUgMi41aC0yMHptLS41IDR2LTRoMjF2NEgxMnoiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTE0IDI5LjV2LTEzaDE3djEzSDE0eiIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMTQgMTYuNUwxMSAxNGgyM2wtMyAyLjVIMTR6TTExIDE0VjloNHYyaDVWOWg1djJoNVY5aDR2NUgxMXoiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTEyIDM1LjVoMjFtLTIwLTRoMTltLTE4LTJoMTdtLTE3LTEzaDE3TTExIDE0aDIzIiBmaWxsPSJub25lIiBzdHJva2U9IiNlY2VjZWMiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjwvZz48L3N2Zz4=')}
+.pc.bQ{background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxnIHN0cm9rZT0ibm9uZSI+PGNpcmNsZSBjeD0iNiIgY3k9IjEyIiByPSIyLjc1Ii8+PGNpcmNsZSBjeD0iMTQiIGN5PSI5IiByPSIyLjc1Ii8+PGNpcmNsZSBjeD0iMjIuNSIgY3k9IjgiIHI9IjIuNzUiLz48Y2lyY2xlIGN4PSIzMSIgY3k9IjkiIHI9IjIuNzUiLz48Y2lyY2xlIGN4PSIzOSIgY3k9IjEyIiByPSIyLjc1Ii8+PC9nPjxwYXRoIGQ9Ik05IDI2YzguNS0xLjUgMjEtMS41IDI3IDBsMi41LTEyLjVMMzEgMjVsLS4zLTE0LjEtNS4yIDEzLjYtMy0xNC41LTMgMTQuNS01LjItMTMuNkwxNCAyNSA2LjUgMTMuNSA5IDI2eiIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNOSAyNmMwIDIgMS41IDIgMi41IDQgMSAxLjUgMSAxIC41IDMuNS0xLjUgMS0xLjUgMi41LTEuNSAyLjUtMS41IDEuNS41IDIuNS41IDIuNSA2LjUgMSAxNi41IDEgMjMgMCAwIDAgMS41LTEgMC0yLjUgMCAwIC41LTEuNS0xLTIuNS0uNS0yLjUtLjUtMiAuNS0zLjUgMS0yIDIuNS0yIDIuNS00LTguNS0xLjUtMTguNS0xLjUtMjcgMHoiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTExIDM4LjVhMzUgMzUgMSAwIDAgMjMgMCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMTEgMjlhMzUgMzUgMSAwIDEgMjMgMG0tMjEuNSAyLjVoMjBtLTIxIDNhMzUgMzUgMSAwIDAgMjIgMG0tMjMgM2EzNSAzNSAxIDAgMCAyNCAwIiBmaWxsPSJub25lIiBzdHJva2U9IiNlY2VjZWMiLz48L2c+PC9zdmc+')}
+.pc.bK{background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMi41IDExLjYzVjYiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjIuNSAyNXM0LjUtNy41IDMtMTAuNWMwIDAtMS0yLjUtMy0yLjVzLTMgMi41LTMgMi41Yy0xLjUgMyAzIDEwLjUgMyAxMC41IiBmaWxsPSIjMDAwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0xMS41IDM3YzUuNSAzLjUgMTUuNSAzLjUgMjEgMHYtN3M5LTQuNSA2LTEwLjVjLTQtNi41LTEzLjUtMy41LTE2IDRWMjd2LTMuNWMtMy41LTcuNS0xMy0xMC41LTE2LTQtMyA2IDUgMTAgNSAxMFYzN3oiIGZpbGw9IiMwMDAiLz48cGF0aCBkPSJNMjAgOGg1IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PHBhdGggZD0iTTMyIDI5LjVzOC41LTQgNi4wMy05LjY1QzM0LjE1IDE0IDI1IDE4IDIyLjUgMjQuNWwuMDEgMi4xLS4wMS0yLjFDMjAgMTggOS45MDYgMTQgNi45OTcgMTkuODVjLTIuNDk3IDUuNjUgNC44NTMgOSA0Ljg1MyA5IiBzdHJva2U9IiNlY2VjZWMiLz48cGF0aCBkPSJNMTEuNSAzMGM1LjUtMyAxNS41LTMgMjEgMG0tMjEgMy41YzUuNS0zIDE1LjUtMyAyMSAwbS0yMSAzLjVjNS41LTMgMTUuNS0zIDIxIDAiIHN0cm9rZT0iI2VjZWNlYyIvPjwvZz48L3N2Zz4=')}
+</style>
+</head>
+<body>
+<div class="top">
+  <a class="lib" href="../../../#white-1e4" title="Back to the repertoire">&larr; Repertoire</a>
+  <span class="t">1.e4 e5 — Fischer with White</span>
+  <button id="fminus" title="Smaller text">A−</button>
+  <button id="fplus" title="Larger text">A+</button>
+  <button id="dark" title="Dark mode">Dark</button>
+  <button id="bTog" class="tog" title="Show or hide the board">Hide board</button>
+</div>
+<div class="wrap">
+  <nav class="toc">
+    <div class="h">Games <span id="tocn"></span></div>
+    <div id="toc"></div>
+  </nav>
+  <main>
+    <div class="kicker">Fischer with White · 1.e4</div>
+    <h1>1.e4 e5</h1>
+    <div class="dek">Mostly Ruy Lopez (112)</div>
+    <div class="stats" id="stats"></div>
+    <a class="tree" id="treeLink" href="../../trees/e4-e5/"><img id="treeImg" src="../../trees/e4-e5/preview.jpg" alt="Opening tree for 1.e4 e5"><span id="treeCap">Open the zoomable tree &rarr;</span></a>
+    <div class="stats" id="treeNote"></div>
+
+    <div class="chips" id="chips"></div>
+    <div class="tools">
+      <input id="q" type="search" placeholder="Search opponent, event, year, opening…" aria-label="Search games">
+      <select id="sort" aria-label="Sort games">
+        <option value="new">Newest first</option>
+        <option value="old">Oldest first</option>
+        <option value="elo">Strongest opponent first</option>
+        <option value="long">Longest games first</option>
+      </select>
+    </div>
+    <p class="stats">Click any move to see the position on the board. Use ← → to step through a game, Home / End to jump, [ and ] for the previous or next game, F to flip the board.</p>
+    <div id="games"></div>
+    <button class="more" id="more" hidden>Show more games</button>
+  </main>
+  <aside class="bp">
+    <div class="bhead"><span id="who"></span><b id="cur"></b></div>
+    <div id="live"></div>
+    <div class="ctrls">
+      <button id="bStart" title="Start (Home)">⏮</button>
+      <button id="bPrev" title="Back (←)">◀</button>
+      <button id="bNext" title="Forward (→)">▶</button>
+      <button id="bEnd" title="End of game (End)">⏭</button>
+      <button id="bFlip" title="Flip board (F)">⇅</button>
+    </div>
+    <div class="gnav"><button id="gPrev" title="Previous game ([)">◀ game</button><button id="gNext" title="Next game (])">game ▶</button></div>
+    <div class="msg" id="msg"></div>
+  </aside>
+</div>
+<script>/*
+ * Copyright (c) 2020, Jeff Hlywa (jhlywa@gmail.com)
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ *----------------------------------------------------------------------------*/
+
+/* minified license below  */
+
+/* @license
+ * Copyright (c) 2018, Jeff Hlywa (jhlywa@gmail.com)
+ * Released under the BSD license
+ * https://github.com/jhlywa/chess.js/blob/master/LICENSE
+ */
+
+var Chess = function(fen) {
+  var BLACK = 'b'
+  var WHITE = 'w'
+
+  var EMPTY = -1
+
+  var PAWN = 'p'
+  var KNIGHT = 'n'
+  var BISHOP = 'b'
+  var ROOK = 'r'
+  var QUEEN = 'q'
+  var KING = 'k'
+
+  var SYMBOLS = 'pnbrqkPNBRQK'
+
+  var DEFAULT_POSITION =
+    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+
+  var POSSIBLE_RESULTS = ['1-0', '0-1', '1/2-1/2', '*']
+
+  var PAWN_OFFSETS = {
+    b: [16, 32, 17, 15],
+    w: [-16, -32, -17, -15]
+  }
+
+  var PIECE_OFFSETS = {
+    n: [-18, -33, -31, -14, 18, 33, 31, 14],
+    b: [-17, -15, 17, 15],
+    r: [-16, 1, 16, -1],
+    q: [-17, -16, -15, 1, 17, 16, 15, -1],
+    k: [-17, -16, -15, 1, 17, 16, 15, -1]
+  }
+
+  // prettier-ignore
+  var ATTACKS = [
+    20, 0, 0, 0, 0, 0, 0, 24,  0, 0, 0, 0, 0, 0,20, 0,
+     0,20, 0, 0, 0, 0, 0, 24,  0, 0, 0, 0, 0,20, 0, 0,
+     0, 0,20, 0, 0, 0, 0, 24,  0, 0, 0, 0,20, 0, 0, 0,
+     0, 0, 0,20, 0, 0, 0, 24,  0, 0, 0,20, 0, 0, 0, 0,
+     0, 0, 0, 0,20, 0, 0, 24,  0, 0,20, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0,20, 2, 24,  2,20, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 2,53, 56, 53, 2, 0, 0, 0, 0, 0, 0,
+    24,24,24,24,24,24,56,  0, 56,24,24,24,24,24,24, 0,
+     0, 0, 0, 0, 0, 2,53, 56, 53, 2, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0,20, 2, 24,  2,20, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0,20, 0, 0, 24,  0, 0,20, 0, 0, 0, 0, 0,
+     0, 0, 0,20, 0, 0, 0, 24,  0, 0, 0,20, 0, 0, 0, 0,
+     0, 0,20, 0, 0, 0, 0, 24,  0, 0, 0, 0,20, 0, 0, 0,
+     0,20, 0, 0, 0, 0, 0, 24,  0, 0, 0, 0, 0,20, 0, 0,
+    20, 0, 0, 0, 0, 0, 0, 24,  0, 0, 0, 0, 0, 0,20
+  ];
+
+  // prettier-ignore
+  var RAYS = [
+     17,  0,  0,  0,  0,  0,  0, 16,  0,  0,  0,  0,  0,  0, 15, 0,
+      0, 17,  0,  0,  0,  0,  0, 16,  0,  0,  0,  0,  0, 15,  0, 0,
+      0,  0, 17,  0,  0,  0,  0, 16,  0,  0,  0,  0, 15,  0,  0, 0,
+      0,  0,  0, 17,  0,  0,  0, 16,  0,  0,  0, 15,  0,  0,  0, 0,
+      0,  0,  0,  0, 17,  0,  0, 16,  0,  0, 15,  0,  0,  0,  0, 0,
+      0,  0,  0,  0,  0, 17,  0, 16,  0, 15,  0,  0,  0,  0,  0, 0,
+      0,  0,  0,  0,  0,  0, 17, 16, 15,  0,  0,  0,  0,  0,  0, 0,
+      1,  1,  1,  1,  1,  1,  1,  0, -1, -1,  -1,-1, -1, -1, -1, 0,
+      0,  0,  0,  0,  0,  0,-15,-16,-17,  0,  0,  0,  0,  0,  0, 0,
+      0,  0,  0,  0,  0,-15,  0,-16,  0,-17,  0,  0,  0,  0,  0, 0,
+      0,  0,  0,  0,-15,  0,  0,-16,  0,  0,-17,  0,  0,  0,  0, 0,
+      0,  0,  0,-15,  0,  0,  0,-16,  0,  0,  0,-17,  0,  0,  0, 0,
+      0,  0,-15,  0,  0,  0,  0,-16,  0,  0,  0,  0,-17,  0,  0, 0,
+      0,-15,  0,  0,  0,  0,  0,-16,  0,  0,  0,  0,  0,-17,  0, 0,
+    -15,  0,  0,  0,  0,  0,  0,-16,  0,  0,  0,  0,  0,  0,-17
+  ];
+
+  var SHIFTS = { p: 0, n: 1, b: 2, r: 3, q: 4, k: 5 }
+
+  var FLAGS = {
+    NORMAL: 'n',
+    CAPTURE: 'c',
+    BIG_PAWN: 'b',
+    EP_CAPTURE: 'e',
+    PROMOTION: 'p',
+    KSIDE_CASTLE: 'k',
+    QSIDE_CASTLE: 'q'
+  }
+
+  var BITS = {
+    NORMAL: 1,
+    CAPTURE: 2,
+    BIG_PAWN: 4,
+    EP_CAPTURE: 8,
+    PROMOTION: 16,
+    KSIDE_CASTLE: 32,
+    QSIDE_CASTLE: 64
+  }
+
+  var RANK_1 = 7
+  var RANK_2 = 6
+  var RANK_3 = 5
+  var RANK_4 = 4
+  var RANK_5 = 3
+  var RANK_6 = 2
+  var RANK_7 = 1
+  var RANK_8 = 0
+
+  // prettier-ignore
+  var SQUARES = {
+    a8:   0, b8:   1, c8:   2, d8:   3, e8:   4, f8:   5, g8:   6, h8:   7,
+    a7:  16, b7:  17, c7:  18, d7:  19, e7:  20, f7:  21, g7:  22, h7:  23,
+    a6:  32, b6:  33, c6:  34, d6:  35, e6:  36, f6:  37, g6:  38, h6:  39,
+    a5:  48, b5:  49, c5:  50, d5:  51, e5:  52, f5:  53, g5:  54, h5:  55,
+    a4:  64, b4:  65, c4:  66, d4:  67, e4:  68, f4:  69, g4:  70, h4:  71,
+    a3:  80, b3:  81, c3:  82, d3:  83, e3:  84, f3:  85, g3:  86, h3:  87,
+    a2:  96, b2:  97, c2:  98, d2:  99, e2: 100, f2: 101, g2: 102, h2: 103,
+    a1: 112, b1: 113, c1: 114, d1: 115, e1: 116, f1: 117, g1: 118, h1: 119
+  };
+
+  var ROOKS = {
+    w: [
+      { square: SQUARES.a1, flag: BITS.QSIDE_CASTLE },
+      { square: SQUARES.h1, flag: BITS.KSIDE_CASTLE }
+    ],
+    b: [
+      { square: SQUARES.a8, flag: BITS.QSIDE_CASTLE },
+      { square: SQUARES.h8, flag: BITS.KSIDE_CASTLE }
+    ]
+  }
+
+  var board = new Array(128)
+  var kings = { w: EMPTY, b: EMPTY }
+  var turn = WHITE
+  var castling = { w: 0, b: 0 }
+  var ep_square = EMPTY
+  var half_moves = 0
+  var move_number = 1
+  var history = []
+  var header = {}
+
+  /* if the user passes in a fen string, load it, else default to
+   * starting position
+   */
+  if (typeof fen === 'undefined') {
+    load(DEFAULT_POSITION)
+  } else {
+    load(fen)
+  }
+
+  function clear(keep_headers) {
+    if (typeof keep_headers === 'undefined') {
+      keep_headers = false
+    }
+
+    board = new Array(128)
+    kings = { w: EMPTY, b: EMPTY }
+    turn = WHITE
+    castling = { w: 0, b: 0 }
+    ep_square = EMPTY
+    half_moves = 0
+    move_number = 1
+    history = []
+    if (!keep_headers) header = {}
+    update_setup(generate_fen())
+  }
+
+  function reset() {
+    load(DEFAULT_POSITION)
+  }
+
+  function load(fen, keep_headers) {
+    if (typeof keep_headers === 'undefined') {
+      keep_headers = false
+    }
+
+    var tokens = fen.split(/\s+/)
+    var position = tokens[0]
+    var square = 0
+
+    if (!validate_fen(fen).valid) {
+      return false
+    }
+
+    clear(keep_headers)
+
+    for (var i = 0; i < position.length; i++) {
+      var piece = position.charAt(i)
+
+      if (piece === '/') {
+        square += 8
+      } else if (is_digit(piece)) {
+        square += parseInt(piece, 10)
+      } else {
+        var color = piece < 'a' ? WHITE : BLACK
+        put({ type: piece.toLowerCase(), color: color }, algebraic(square))
+        square++
+      }
+    }
+
+    turn = tokens[1]
+
+    if (tokens[2].indexOf('K') > -1) {
+      castling.w |= BITS.KSIDE_CASTLE
+    }
+    if (tokens[2].indexOf('Q') > -1) {
+      castling.w |= BITS.QSIDE_CASTLE
+    }
+    if (tokens[2].indexOf('k') > -1) {
+      castling.b |= BITS.KSIDE_CASTLE
+    }
+    if (tokens[2].indexOf('q') > -1) {
+      castling.b |= BITS.QSIDE_CASTLE
+    }
+
+    ep_square = tokens[3] === '-' ? EMPTY : SQUARES[tokens[3]]
+    half_moves = parseInt(tokens[4], 10)
+    move_number = parseInt(tokens[5], 10)
+
+    update_setup(generate_fen())
+
+    return true
+  }
+
+  /* TODO: this function is pretty much crap - it validates structure but
+   * completely ignores content (e.g. doesn't verify that each side has a king)
+   * ... we should rewrite this, and ditch the silly error_number field while
+   * we're at it
+   */
+  function validate_fen(fen) {
+    var errors = {
+      0: 'No errors.',
+      1: 'FEN string must contain six space-delimited fields.',
+      2: '6th field (move number) must be a positive integer.',
+      3: '5th field (half move counter) must be a non-negative integer.',
+      4: '4th field (en-passant square) is invalid.',
+      5: '3rd field (castling availability) is invalid.',
+      6: '2nd field (side to move) is invalid.',
+      7: "1st field (piece positions) does not contain 8 '/'-delimited rows.",
+      8: '1st field (piece positions) is invalid [consecutive numbers].',
+      9: '1st field (piece positions) is invalid [invalid piece].',
+      10: '1st field (piece positions) is invalid [row too large].',
+      11: 'Illegal en-passant square'
+    }
+
+    /* 1st criterion: 6 space-seperated fields? */
+    var tokens = fen.split(/\s+/)
+    if (tokens.length !== 6) {
+      return { valid: false, error_number: 1, error: errors[1] }
+    }
+
+    /* 2nd criterion: move number field is a integer value > 0? */
+    if (isNaN(tokens[5]) || parseInt(tokens[5], 10) <= 0) {
+      return { valid: false, error_number: 2, error: errors[2] }
+    }
+
+    /* 3rd criterion: half move counter is an integer >= 0? */
+    if (isNaN(tokens[4]) || parseInt(tokens[4], 10) < 0) {
+      return { valid: false, error_number: 3, error: errors[3] }
+    }
+
+    /* 4th criterion: 4th field is a valid e.p.-string? */
+    if (!/^(-|[abcdefgh][36])$/.test(tokens[3])) {
+      return { valid: false, error_number: 4, error: errors[4] }
+    }
+
+    /* 5th criterion: 3th field is a valid castle-string? */
+    if (!/^(KQ?k?q?|Qk?q?|kq?|q|-)$/.test(tokens[2])) {
+      return { valid: false, error_number: 5, error: errors[5] }
+    }
+
+    /* 6th criterion: 2nd field is "w" (white) or "b" (black)? */
+    if (!/^(w|b)$/.test(tokens[1])) {
+      return { valid: false, error_number: 6, error: errors[6] }
+    }
+
+    /* 7th criterion: 1st field contains 8 rows? */
+    var rows = tokens[0].split('/')
+    if (rows.length !== 8) {
+      return { valid: false, error_number: 7, error: errors[7] }
+    }
+
+    /* 8th criterion: every row is valid? */
+    for (var i = 0; i < rows.length; i++) {
+      /* check for right sum of fields AND not two numbers in succession */
+      var sum_fields = 0
+      var previous_was_number = false
+
+      for (var k = 0; k < rows[i].length; k++) {
+        if (!isNaN(rows[i][k])) {
+          if (previous_was_number) {
+            return { valid: false, error_number: 8, error: errors[8] }
+          }
+          sum_fields += parseInt(rows[i][k], 10)
+          previous_was_number = true
+        } else {
+          if (!/^[prnbqkPRNBQK]$/.test(rows[i][k])) {
+            return { valid: false, error_number: 9, error: errors[9] }
+          }
+          sum_fields += 1
+          previous_was_number = false
+        }
+      }
+      if (sum_fields !== 8) {
+        return { valid: false, error_number: 10, error: errors[10] }
+      }
+    }
+
+    if (
+      (tokens[3][1] == '3' && tokens[1] == 'w') ||
+      (tokens[3][1] == '6' && tokens[1] == 'b')
+    ) {
+      return { valid: false, error_number: 11, error: errors[11] }
+    }
+
+    /* everything's okay! */
+    return { valid: true, error_number: 0, error: errors[0] }
+  }
+
+  function generate_fen() {
+    var empty = 0
+    var fen = ''
+
+    for (var i = SQUARES.a8; i <= SQUARES.h1; i++) {
+      if (board[i] == null) {
+        empty++
+      } else {
+        if (empty > 0) {
+          fen += empty
+          empty = 0
+        }
+        var color = board[i].color
+        var piece = board[i].type
+
+        fen += color === WHITE ? piece.toUpperCase() : piece.toLowerCase()
+      }
+
+      if ((i + 1) & 0x88) {
+        if (empty > 0) {
+          fen += empty
+        }
+
+        if (i !== SQUARES.h1) {
+          fen += '/'
+        }
+
+        empty = 0
+        i += 8
+      }
+    }
+
+    var cflags = ''
+    if (castling[WHITE] & BITS.KSIDE_CASTLE) {
+      cflags += 'K'
+    }
+    if (castling[WHITE] & BITS.QSIDE_CASTLE) {
+      cflags += 'Q'
+    }
+    if (castling[BLACK] & BITS.KSIDE_CASTLE) {
+      cflags += 'k'
+    }
+    if (castling[BLACK] & BITS.QSIDE_CASTLE) {
+      cflags += 'q'
+    }
+
+    /* do we have an empty castling flag? */
+    cflags = cflags || '-'
+    var epflags = ep_square === EMPTY ? '-' : algebraic(ep_square)
+
+    return [fen, turn, cflags, epflags, half_moves, move_number].join(' ')
+  }
+
+  function set_header(args) {
+    for (var i = 0; i < args.length; i += 2) {
+      if (typeof args[i] === 'string' && typeof args[i + 1] === 'string') {
+        header[args[i]] = args[i + 1]
+      }
+    }
+    return header
+  }
+
+  /* called when the initial board setup is changed with put() or remove().
+   * modifies the SetUp and FEN properties of the header object.  if the FEN is
+   * equal to the default position, the SetUp and FEN are deleted
+   * the setup is only updated if history.length is zero, ie moves haven't been
+   * made.
+   */
+  function update_setup(fen) {
+    if (history.length > 0) return
+
+    if (fen !== DEFAULT_POSITION) {
+      header['SetUp'] = '1'
+      header['FEN'] = fen
+    } else {
+      delete header['SetUp']
+      delete header['FEN']
+    }
+  }
+
+  function get(square) {
+    var piece = board[SQUARES[square]]
+    return piece ? { type: piece.type, color: piece.color } : null
+  }
+
+  function put(piece, square) {
+    /* check for valid piece object */
+    if (!('type' in piece && 'color' in piece)) {
+      return false
+    }
+
+    /* check for piece */
+    if (SYMBOLS.indexOf(piece.type.toLowerCase()) === -1) {
+      return false
+    }
+
+    /* check for valid square */
+    if (!(square in SQUARES)) {
+      return false
+    }
+
+    var sq = SQUARES[square]
+
+    /* don't let the user place more than one king */
+    if (
+      piece.type == KING &&
+      !(kings[piece.color] == EMPTY || kings[piece.color] == sq)
+    ) {
+      return false
+    }
+
+    board[sq] = { type: piece.type, color: piece.color }
+    if (piece.type === KING) {
+      kings[piece.color] = sq
+    }
+
+    update_setup(generate_fen())
+
+    return true
+  }
+
+  function remove(square) {
+    var piece = get(square)
+    board[SQUARES[square]] = null
+    if (piece && piece.type === KING) {
+      kings[piece.color] = EMPTY
+    }
+
+    update_setup(generate_fen())
+
+    return piece
+  }
+
+  function build_move(board, from, to, flags, promotion) {
+    var move = {
+      color: turn,
+      from: from,
+      to: to,
+      flags: flags,
+      piece: board[from].type
+    }
+
+    if (promotion) {
+      move.flags |= BITS.PROMOTION
+      move.promotion = promotion
+    }
+
+    if (board[to]) {
+      move.captured = board[to].type
+    } else if (flags & BITS.EP_CAPTURE) {
+      move.captured = PAWN
+    }
+    return move
+  }
+
+  function generate_moves(options) {
+    function add_move(board, moves, from, to, flags) {
+      /* if pawn promotion */
+      if (
+        board[from].type === PAWN &&
+        (rank(to) === RANK_8 || rank(to) === RANK_1)
+      ) {
+        var pieces = [QUEEN, ROOK, BISHOP, KNIGHT]
+        for (var i = 0, len = pieces.length; i < len; i++) {
+          moves.push(build_move(board, from, to, flags, pieces[i]))
+        }
+      } else {
+        moves.push(build_move(board, from, to, flags))
+      }
+    }
+
+    var moves = []
+    var us = turn
+    var them = swap_color(us)
+    var second_rank = { b: RANK_7, w: RANK_2 }
+
+    var first_sq = SQUARES.a8
+    var last_sq = SQUARES.h1
+    var single_square = false
+
+    /* do we want legal moves? */
+    var legal =
+      typeof options !== 'undefined' && 'legal' in options
+        ? options.legal
+        : true
+
+    /* are we generating moves for a single square? */
+    if (typeof options !== 'undefined' && 'square' in options) {
+      if (options.square in SQUARES) {
+        first_sq = last_sq = SQUARES[options.square]
+        single_square = true
+      } else {
+        /* invalid square */
+        return []
+      }
+    }
+
+    for (var i = first_sq; i <= last_sq; i++) {
+      /* did we run off the end of the board */
+      if (i & 0x88) {
+        i += 7
+        continue
+      }
+
+      var piece = board[i]
+      if (piece == null || piece.color !== us) {
+        continue
+      }
+
+      if (piece.type === PAWN) {
+        /* single square, non-capturing */
+        var square = i + PAWN_OFFSETS[us][0]
+        if (board[square] == null) {
+          add_move(board, moves, i, square, BITS.NORMAL)
+
+          /* double square */
+          var square = i + PAWN_OFFSETS[us][1]
+          if (second_rank[us] === rank(i) && board[square] == null) {
+            add_move(board, moves, i, square, BITS.BIG_PAWN)
+          }
+        }
+
+        /* pawn captures */
+        for (j = 2; j < 4; j++) {
+          var square = i + PAWN_OFFSETS[us][j]
+          if (square & 0x88) continue
+
+          if (board[square] != null && board[square].color === them) {
+            add_move(board, moves, i, square, BITS.CAPTURE)
+          } else if (square === ep_square) {
+            add_move(board, moves, i, ep_square, BITS.EP_CAPTURE)
+          }
+        }
+      } else {
+        for (var j = 0, len = PIECE_OFFSETS[piece.type].length; j < len; j++) {
+          var offset = PIECE_OFFSETS[piece.type][j]
+          var square = i
+
+          while (true) {
+            square += offset
+            if (square & 0x88) break
+
+            if (board[square] == null) {
+              add_move(board, moves, i, square, BITS.NORMAL)
+            } else {
+              if (board[square].color === us) break
+              add_move(board, moves, i, square, BITS.CAPTURE)
+              break
+            }
+
+            /* break, if knight or king */
+            if (piece.type === 'n' || piece.type === 'k') break
+          }
+        }
+      }
+    }
+
+    /* check for castling if: a) we're generating all moves, or b) we're doing
+     * single square move generation on the king's square
+     */
+    if (!single_square || last_sq === kings[us]) {
+      /* king-side castling */
+      if (castling[us] & BITS.KSIDE_CASTLE) {
+        var castling_from = kings[us]
+        var castling_to = castling_from + 2
+
+        if (
+          board[castling_from + 1] == null &&
+          board[castling_to] == null &&
+          !attacked(them, kings[us]) &&
+          !attacked(them, castling_from + 1) &&
+          !attacked(them, castling_to)
+        ) {
+          add_move(board, moves, kings[us], castling_to, BITS.KSIDE_CASTLE)
+        }
+      }
+
+      /* queen-side castling */
+      if (castling[us] & BITS.QSIDE_CASTLE) {
+        var castling_from = kings[us]
+        var castling_to = castling_from - 2
+
+        if (
+          board[castling_from - 1] == null &&
+          board[castling_from - 2] == null &&
+          board[castling_from - 3] == null &&
+          !attacked(them, kings[us]) &&
+          !attacked(them, castling_from - 1) &&
+          !attacked(them, castling_to)
+        ) {
+          add_move(board, moves, kings[us], castling_to, BITS.QSIDE_CASTLE)
+        }
+      }
+    }
+
+    /* return all pseudo-legal moves (this includes moves that allow the king
+     * to be captured)
+     */
+    if (!legal) {
+      return moves
+    }
+
+    /* filter out illegal moves */
+    var legal_moves = []
+    for (var i = 0, len = moves.length; i < len; i++) {
+      make_move(moves[i])
+      if (!king_attacked(us)) {
+        legal_moves.push(moves[i])
+      }
+      undo_move()
+    }
+
+    return legal_moves
+  }
+
+  /* convert a move from 0x88 coordinates to Standard Algebraic Notation
+   * (SAN)
+   *
+   * @param {boolean} sloppy Use the sloppy SAN generator to work around over
+   * disambiguation bugs in Fritz and Chessbase.  See below:
+   *
+   * r1bqkbnr/ppp2ppp/2n5/1B1pP3/4P3/8/PPPP2PP/RNBQK1NR b KQkq - 2 4
+   * 4. ... Nge7 is overly disambiguated because the knight on c6 is pinned
+   * 4. ... Ne7 is technically the valid SAN
+   */
+  function move_to_san(move, sloppy) {
+    var output = ''
+
+    if (move.flags & BITS.KSIDE_CASTLE) {
+      output = 'O-O'
+    } else if (move.flags & BITS.QSIDE_CASTLE) {
+      output = 'O-O-O'
+    } else {
+      var disambiguator = get_disambiguator(move, sloppy)
+
+      if (move.piece !== PAWN) {
+        output += move.piece.toUpperCase() + disambiguator
+      }
+
+      if (move.flags & (BITS.CAPTURE | BITS.EP_CAPTURE)) {
+        if (move.piece === PAWN) {
+          output += algebraic(move.from)[0]
+        }
+        output += 'x'
+      }
+
+      output += algebraic(move.to)
+
+      if (move.flags & BITS.PROMOTION) {
+        output += '=' + move.promotion.toUpperCase()
+      }
+    }
+
+    make_move(move)
+    if (in_check()) {
+      if (in_checkmate()) {
+        output += '#'
+      } else {
+        output += '+'
+      }
+    }
+    undo_move()
+
+    return output
+  }
+
+  // parses all of the decorators out of a SAN string
+  function stripped_san(move) {
+    return move.replace(/=/, '').replace(/[+#]?[?!]*$/, '')
+  }
+
+  function attacked(color, square) {
+    for (var i = SQUARES.a8; i <= SQUARES.h1; i++) {
+      /* did we run off the end of the board */
+      if (i & 0x88) {
+        i += 7
+        continue
+      }
+
+      /* if empty square or wrong color */
+      if (board[i] == null || board[i].color !== color) continue
+
+      var piece = board[i]
+      var difference = i - square
+      var index = difference + 119
+
+      if (ATTACKS[index] & (1 << SHIFTS[piece.type])) {
+        if (piece.type === PAWN) {
+          if (difference > 0) {
+            if (piece.color === WHITE) return true
+          } else {
+            if (piece.color === BLACK) return true
+          }
+          continue
+        }
+
+        /* if the piece is a knight or a king */
+        if (piece.type === 'n' || piece.type === 'k') return true
+
+        var offset = RAYS[index]
+        var j = i + offset
+
+        var blocked = false
+        while (j !== square) {
+          if (board[j] != null) {
+            blocked = true
+            break
+          }
+          j += offset
+        }
+
+        if (!blocked) return true
+      }
+    }
+
+    return false
+  }
+
+  function king_attacked(color) {
+    return attacked(swap_color(color), kings[color])
+  }
+
+  function in_check() {
+    return king_attacked(turn)
+  }
+
+  function in_checkmate() {
+    return in_check() && generate_moves().length === 0
+  }
+
+  function in_stalemate() {
+    return !in_check() && generate_moves().length === 0
+  }
+
+  function insufficient_material() {
+    var pieces = {}
+    var bishops = []
+    var num_pieces = 0
+    var sq_color = 0
+
+    for (var i = SQUARES.a8; i <= SQUARES.h1; i++) {
+      sq_color = (sq_color + 1) % 2
+      if (i & 0x88) {
+        i += 7
+        continue
+      }
+
+      var piece = board[i]
+      if (piece) {
+        pieces[piece.type] = piece.type in pieces ? pieces[piece.type] + 1 : 1
+        if (piece.type === BISHOP) {
+          bishops.push(sq_color)
+        }
+        num_pieces++
+      }
+    }
+
+    /* k vs. k */
+    if (num_pieces === 2) {
+      return true
+    } else if (
+      /* k vs. kn .... or .... k vs. kb */
+      num_pieces === 3 &&
+      (pieces[BISHOP] === 1 || pieces[KNIGHT] === 1)
+    ) {
+      return true
+    } else if (num_pieces === pieces[BISHOP] + 2) {
+      /* kb vs. kb where any number of bishops are all on the same color */
+      var sum = 0
+      var len = bishops.length
+      for (var i = 0; i < len; i++) {
+        sum += bishops[i]
+      }
+      if (sum === 0 || sum === len) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  function in_threefold_repetition() {
+    /* TODO: while this function is fine for casual use, a better
+     * implementation would use a Zobrist key (instead of FEN). the
+     * Zobrist key would be maintained in the make_move/undo_move functions,
+     * avoiding the costly that we do below.
+     */
+    var moves = []
+    var positions = {}
+    var repetition = false
+
+    while (true) {
+      var move = undo_move()
+      if (!move) break
+      moves.push(move)
+    }
+
+    while (true) {
+      /* remove the last two fields in the FEN string, they're not needed
+       * when checking for draw by rep */
+      var fen = generate_fen()
+        .split(' ')
+        .slice(0, 4)
+        .join(' ')
+
+      /* has the position occurred three or move times */
+      positions[fen] = fen in positions ? positions[fen] + 1 : 1
+      if (positions[fen] >= 3) {
+        repetition = true
+      }
+
+      if (!moves.length) {
+        break
+      }
+      make_move(moves.pop())
+    }
+
+    return repetition
+  }
+
+  function push(move) {
+    history.push({
+      move: move,
+      kings: { b: kings.b, w: kings.w },
+      turn: turn,
+      castling: { b: castling.b, w: castling.w },
+      ep_square: ep_square,
+      half_moves: half_moves,
+      move_number: move_number
+    })
+  }
+
+  function make_move(move) {
+    var us = turn
+    var them = swap_color(us)
+    push(move)
+
+    board[move.to] = board[move.from]
+    board[move.from] = null
+
+    /* if ep capture, remove the captured pawn */
+    if (move.flags & BITS.EP_CAPTURE) {
+      if (turn === BLACK) {
+        board[move.to - 16] = null
+      } else {
+        board[move.to + 16] = null
+      }
+    }
+
+    /* if pawn promotion, replace with new piece */
+    if (move.flags & BITS.PROMOTION) {
+      board[move.to] = { type: move.promotion, color: us }
+    }
+
+    /* if we moved the king */
+    if (board[move.to].type === KING) {
+      kings[board[move.to].color] = move.to
+
+      /* if we castled, move the rook next to the king */
+      if (move.flags & BITS.KSIDE_CASTLE) {
+        var castling_to = move.to - 1
+        var castling_from = move.to + 1
+        board[castling_to] = board[castling_from]
+        board[castling_from] = null
+      } else if (move.flags & BITS.QSIDE_CASTLE) {
+        var castling_to = move.to + 1
+        var castling_from = move.to - 2
+        board[castling_to] = board[castling_from]
+        board[castling_from] = null
+      }
+
+      /* turn off castling */
+      castling[us] = ''
+    }
+
+    /* turn off castling if we move a rook */
+    if (castling[us]) {
+      for (var i = 0, len = ROOKS[us].length; i < len; i++) {
+        if (
+          move.from === ROOKS[us][i].square &&
+          castling[us] & ROOKS[us][i].flag
+        ) {
+          castling[us] ^= ROOKS[us][i].flag
+          break
+        }
+      }
+    }
+
+    /* turn off castling if we capture a rook */
+    if (castling[them]) {
+      for (var i = 0, len = ROOKS[them].length; i < len; i++) {
+        if (
+          move.to === ROOKS[them][i].square &&
+          castling[them] & ROOKS[them][i].flag
+        ) {
+          castling[them] ^= ROOKS[them][i].flag
+          break
+        }
+      }
+    }
+
+    /* if big pawn move, update the en passant square */
+    if (move.flags & BITS.BIG_PAWN) {
+      if (turn === 'b') {
+        ep_square = move.to - 16
+      } else {
+        ep_square = move.to + 16
+      }
+    } else {
+      ep_square = EMPTY
+    }
+
+    /* reset the 50 move counter if a pawn is moved or a piece is captured */
+    if (move.piece === PAWN) {
+      half_moves = 0
+    } else if (move.flags & (BITS.CAPTURE | BITS.EP_CAPTURE)) {
+      half_moves = 0
+    } else {
+      half_moves++
+    }
+
+    if (turn === BLACK) {
+      move_number++
+    }
+    turn = swap_color(turn)
+  }
+
+  function undo_move() {
+    var old = history.pop()
+    if (old == null) {
+      return null
+    }
+
+    var move = old.move
+    kings = old.kings
+    turn = old.turn
+    castling = old.castling
+    ep_square = old.ep_square
+    half_moves = old.half_moves
+    move_number = old.move_number
+
+    var us = turn
+    var them = swap_color(turn)
+
+    board[move.from] = board[move.to]
+    board[move.from].type = move.piece // to undo any promotions
+    board[move.to] = null
+
+    if (move.flags & BITS.CAPTURE) {
+      board[move.to] = { type: move.captured, color: them }
+    } else if (move.flags & BITS.EP_CAPTURE) {
+      var index
+      if (us === BLACK) {
+        index = move.to - 16
+      } else {
+        index = move.to + 16
+      }
+      board[index] = { type: PAWN, color: them }
+    }
+
+    if (move.flags & (BITS.KSIDE_CASTLE | BITS.QSIDE_CASTLE)) {
+      var castling_to, castling_from
+      if (move.flags & BITS.KSIDE_CASTLE) {
+        castling_to = move.to + 1
+        castling_from = move.to - 1
+      } else if (move.flags & BITS.QSIDE_CASTLE) {
+        castling_to = move.to - 2
+        castling_from = move.to + 1
+      }
+
+      board[castling_to] = board[castling_from]
+      board[castling_from] = null
+    }
+
+    return move
+  }
+
+  /* this function is used to uniquely identify ambiguous moves */
+  function get_disambiguator(move, sloppy) {
+    var moves = generate_moves({ legal: !sloppy })
+
+    var from = move.from
+    var to = move.to
+    var piece = move.piece
+
+    var ambiguities = 0
+    var same_rank = 0
+    var same_file = 0
+
+    for (var i = 0, len = moves.length; i < len; i++) {
+      var ambig_from = moves[i].from
+      var ambig_to = moves[i].to
+      var ambig_piece = moves[i].piece
+
+      /* if a move of the same piece type ends on the same to square, we'll
+       * need to add a disambiguator to the algebraic notation
+       */
+      if (piece === ambig_piece && from !== ambig_from && to === ambig_to) {
+        ambiguities++
+
+        if (rank(from) === rank(ambig_from)) {
+          same_rank++
+        }
+
+        if (file(from) === file(ambig_from)) {
+          same_file++
+        }
+      }
+    }
+
+    if (ambiguities > 0) {
+      /* if there exists a similar moving piece on the same rank and file as
+       * the move in question, use the square as the disambiguator
+       */
+      if (same_rank > 0 && same_file > 0) {
+        return algebraic(from)
+      } else if (same_file > 0) {
+        /* if the moving piece rests on the same file, use the rank symbol as the
+         * disambiguator
+         */
+        return algebraic(from).charAt(1)
+      } else {
+        /* else use the file symbol */
+        return algebraic(from).charAt(0)
+      }
+    }
+
+    return ''
+  }
+
+  function ascii() {
+    var s = '   +------------------------+\n'
+    for (var i = SQUARES.a8; i <= SQUARES.h1; i++) {
+      /* display the rank */
+      if (file(i) === 0) {
+        s += ' ' + '87654321'[rank(i)] + ' |'
+      }
+
+      /* empty piece */
+      if (board[i] == null) {
+        s += ' . '
+      } else {
+        var piece = board[i].type
+        var color = board[i].color
+        var symbol = color === WHITE ? piece.toUpperCase() : piece.toLowerCase()
+        s += ' ' + symbol + ' '
+      }
+
+      if ((i + 1) & 0x88) {
+        s += '|\n'
+        i += 8
+      }
+    }
+    s += '   +------------------------+\n'
+    s += '     a  b  c  d  e  f  g  h\n'
+
+    return s
+  }
+
+  // convert a move from Standard Algebraic Notation (SAN) to 0x88 coordinates
+  function move_from_san(move, sloppy) {
+    // strip off any move decorations: e.g Nf3+?!
+    var clean_move = stripped_san(move)
+
+    // if we're using the sloppy parser run a regex to grab piece, to, and from
+    // this should parse invalid SAN like: Pe2-e4, Rc1c4, Qf3xf7
+    if (sloppy) {
+      var matches = clean_move.match(
+        /([pnbrqkPNBRQK])?([a-h][1-8])x?-?([a-h][1-8])([qrbnQRBN])?/
+      )
+      if (matches) {
+        var piece = matches[1]
+        var from = matches[2]
+        var to = matches[3]
+        var promotion = matches[4]
+      }
+    }
+
+    var moves = generate_moves()
+    for (var i = 0, len = moves.length; i < len; i++) {
+      // try the strict parser first, then the sloppy parser if requested
+      // by the user
+      if (
+        clean_move === stripped_san(move_to_san(moves[i])) ||
+        (sloppy && clean_move === stripped_san(move_to_san(moves[i], true)))
+      ) {
+        return moves[i]
+      } else {
+        if (
+          matches &&
+          (!piece || piece.toLowerCase() == moves[i].piece) &&
+          SQUARES[from] == moves[i].from &&
+          SQUARES[to] == moves[i].to &&
+          (!promotion || promotion.toLowerCase() == moves[i].promotion)
+        ) {
+          return moves[i]
+        }
+      }
+    }
+
+    return null
+  }
+
+  /*****************************************************************************
+   * UTILITY FUNCTIONS
+   ****************************************************************************/
+  function rank(i) {
+    return i >> 4
+  }
+
+  function file(i) {
+    return i & 15
+  }
+
+  function algebraic(i) {
+    var f = file(i),
+      r = rank(i)
+    return 'abcdefgh'.substring(f, f + 1) + '87654321'.substring(r, r + 1)
+  }
+
+  function swap_color(c) {
+    return c === WHITE ? BLACK : WHITE
+  }
+
+  function is_digit(c) {
+    return '0123456789'.indexOf(c) !== -1
+  }
+
+  /* pretty = external move object */
+  function make_pretty(ugly_move) {
+    var move = clone(ugly_move)
+    move.san = move_to_san(move, false)
+    move.to = algebraic(move.to)
+    move.from = algebraic(move.from)
+
+    var flags = ''
+
+    for (var flag in BITS) {
+      if (BITS[flag] & move.flags) {
+        flags += FLAGS[flag]
+      }
+    }
+    move.flags = flags
+
+    return move
+  }
+
+  function clone(obj) {
+    var dupe = obj instanceof Array ? [] : {}
+
+    for (var property in obj) {
+      if (typeof property === 'object') {
+        dupe[property] = clone(obj[property])
+      } else {
+        dupe[property] = obj[property]
+      }
+    }
+
+    return dupe
+  }
+
+  function trim(str) {
+    return str.replace(/^\s+|\s+$/g, '')
+  }
+
+  /*****************************************************************************
+   * DEBUGGING UTILITIES
+   ****************************************************************************/
+  function perft(depth) {
+    var moves = generate_moves({ legal: false })
+    var nodes = 0
+    var color = turn
+
+    for (var i = 0, len = moves.length; i < len; i++) {
+      make_move(moves[i])
+      if (!king_attacked(color)) {
+        if (depth - 1 > 0) {
+          var child_nodes = perft(depth - 1)
+          nodes += child_nodes
+        } else {
+          nodes++
+        }
+      }
+      undo_move()
+    }
+
+    return nodes
+  }
+
+  return {
+    /***************************************************************************
+     * PUBLIC CONSTANTS (is there a better way to do this?)
+     **************************************************************************/
+    WHITE: WHITE,
+    BLACK: BLACK,
+    PAWN: PAWN,
+    KNIGHT: KNIGHT,
+    BISHOP: BISHOP,
+    ROOK: ROOK,
+    QUEEN: QUEEN,
+    KING: KING,
+    SQUARES: (function() {
+      /* from the ECMA-262 spec (section 12.6.4):
+       * "The mechanics of enumerating the properties ... is
+       * implementation dependent"
+       * so: for (var sq in SQUARES) { keys.push(sq); } might not be
+       * ordered correctly
+       */
+      var keys = []
+      for (var i = SQUARES.a8; i <= SQUARES.h1; i++) {
+        if (i & 0x88) {
+          i += 7
+          continue
+        }
+        keys.push(algebraic(i))
+      }
+      return keys
+    })(),
+    FLAGS: FLAGS,
+
+    /***************************************************************************
+     * PUBLIC API
+     **************************************************************************/
+    load: function(fen) {
+      return load(fen)
+    },
+
+    reset: function() {
+      return reset()
+    },
+
+    moves: function(options) {
+      /* The internal representation of a chess move is in 0x88 format, and
+       * not meant to be human-readable.  The code below converts the 0x88
+       * square coordinates to algebraic coordinates.  It also prunes an
+       * unnecessary move keys resulting from a verbose call.
+       */
+
+      var ugly_moves = generate_moves(options)
+      var moves = []
+
+      for (var i = 0, len = ugly_moves.length; i < len; i++) {
+        /* does the user want a full move object (most likely not), or just
+         * SAN
+         */
+        if (
+          typeof options !== 'undefined' &&
+          'verbose' in options &&
+          options.verbose
+        ) {
+          moves.push(make_pretty(ugly_moves[i]))
+        } else {
+          moves.push(move_to_san(ugly_moves[i], false))
+        }
+      }
+
+      return moves
+    },
+
+    in_check: function() {
+      return in_check()
+    },
+
+    in_checkmate: function() {
+      return in_checkmate()
+    },
+
+    in_stalemate: function() {
+      return in_stalemate()
+    },
+
+    in_draw: function() {
+      return (
+        half_moves >= 100 ||
+        in_stalemate() ||
+        insufficient_material() ||
+        in_threefold_repetition()
+      )
+    },
+
+    insufficient_material: function() {
+      return insufficient_material()
+    },
+
+    in_threefold_repetition: function() {
+      return in_threefold_repetition()
+    },
+
+    game_over: function() {
+      return (
+        half_moves >= 100 ||
+        in_checkmate() ||
+        in_stalemate() ||
+        insufficient_material() ||
+        in_threefold_repetition()
+      )
+    },
+
+    validate_fen: function(fen) {
+      return validate_fen(fen)
+    },
+
+    fen: function() {
+      return generate_fen()
+    },
+
+    board: function() {
+      var output = [],
+        row = []
+
+      for (var i = SQUARES.a8; i <= SQUARES.h1; i++) {
+        if (board[i] == null) {
+          row.push(null)
+        } else {
+          row.push({ type: board[i].type, color: board[i].color })
+        }
+        if ((i + 1) & 0x88) {
+          output.push(row)
+          row = []
+          i += 8
+        }
+      }
+
+      return output
+    },
+
+    pgn: function(options) {
+      /* using the specification from http://www.chessclub.com/help/PGN-spec
+       * example for html usage: .pgn({ max_width: 72, newline_char: "<br />" })
+       */
+      var newline =
+        typeof options === 'object' && typeof options.newline_char === 'string'
+          ? options.newline_char
+          : '\n'
+      var max_width =
+        typeof options === 'object' && typeof options.max_width === 'number'
+          ? options.max_width
+          : 0
+      var result = []
+      var header_exists = false
+
+      /* add the PGN header headerrmation */
+      for (var i in header) {
+        /* TODO: order of enumerated properties in header object is not
+         * guaranteed, see ECMA-262 spec (section 12.6.4)
+         */
+        result.push('[' + i + ' "' + header[i] + '"]' + newline)
+        header_exists = true
+      }
+
+      if (header_exists && history.length) {
+        result.push(newline)
+      }
+
+      /* pop all of history onto reversed_history */
+      var reversed_history = []
+      while (history.length > 0) {
+        reversed_history.push(undo_move())
+      }
+
+      var moves = []
+      var move_string = ''
+
+      /* build the list of moves.  a move_string looks like: "3. e3 e6" */
+      while (reversed_history.length > 0) {
+        var move = reversed_history.pop()
+
+        /* if the position started with black to move, start PGN with 1. ... */
+        if (!history.length && move.color === 'b') {
+          move_string = move_number + '. ...'
+        } else if (move.color === 'w') {
+          /* store the previous generated move_string if we have one */
+          if (move_string.length) {
+            moves.push(move_string)
+          }
+          move_string = move_number + '.'
+        }
+
+        move_string = move_string + ' ' + move_to_san(move, false)
+        make_move(move)
+      }
+
+      /* are there any other leftover moves? */
+      if (move_string.length) {
+        moves.push(move_string)
+      }
+
+      /* is there a result? */
+      if (typeof header.Result !== 'undefined') {
+        moves.push(header.Result)
+      }
+
+      /* history should be back to what is was before we started generating PGN,
+       * so join together moves
+       */
+      if (max_width === 0) {
+        return result.join('') + moves.join(' ')
+      }
+
+      /* wrap the PGN output at max_width */
+      var current_width = 0
+      for (var i = 0; i < moves.length; i++) {
+        /* if the current move will push past max_width */
+        if (current_width + moves[i].length > max_width && i !== 0) {
+          /* don't end the line with whitespace */
+          if (result[result.length - 1] === ' ') {
+            result.pop()
+          }
+
+          result.push(newline)
+          current_width = 0
+        } else if (i !== 0) {
+          result.push(' ')
+          current_width++
+        }
+        result.push(moves[i])
+        current_width += moves[i].length
+      }
+
+      return result.join('')
+    },
+
+    load_pgn: function(pgn, options) {
+      // allow the user to specify the sloppy move parser to work around over
+      // disambiguation bugs in Fritz and Chessbase
+      var sloppy =
+        typeof options !== 'undefined' && 'sloppy' in options
+          ? options.sloppy
+          : false
+
+      function mask(str) {
+        return str.replace(/\\/g, '\\')
+      }
+
+      function has_keys(object) {
+        for (var key in object) {
+          return true
+        }
+        return false
+      }
+
+      function parse_pgn_header(header, options) {
+        var newline_char =
+          typeof options === 'object' &&
+          typeof options.newline_char === 'string'
+            ? options.newline_char
+            : '\r?\n'
+        var header_obj = {}
+        var headers = header.split(new RegExp(mask(newline_char)))
+        var key = ''
+        var value = ''
+
+        for (var i = 0; i < headers.length; i++) {
+          key = headers[i].replace(/^\[([A-Z][A-Za-z]*)\s.*\]$/, '$1')
+          value = headers[i].replace(/^\[[A-Za-z]+\s"(.*)"\]$/, '$1')
+          if (trim(key).length > 0) {
+            header_obj[key] = value
+          }
+        }
+
+        return header_obj
+      }
+
+      var newline_char =
+        typeof options === 'object' && typeof options.newline_char === 'string'
+          ? options.newline_char
+          : '\r?\n'
+
+      // RegExp to split header. Takes advantage of the fact that header and movetext
+      // will always have a blank line between them (ie, two newline_char's).
+      // With default newline_char, will equal: /^(\[((?:\r?\n)|.)*\])(?:\r?\n){2}/
+      var header_regex = new RegExp(
+        '^(\\[((?:' +
+          mask(newline_char) +
+          ')|.)*\\])' +
+          '(?:' +
+          mask(newline_char) +
+          '){2}'
+      )
+
+      // If no header given, begin with moves.
+      var header_string = header_regex.test(pgn)
+        ? header_regex.exec(pgn)[1]
+        : ''
+
+      // Put the board in the starting position
+      reset()
+
+      /* parse PGN header */
+      var headers = parse_pgn_header(header_string, options)
+      for (var key in headers) {
+        set_header([key, headers[key]])
+      }
+
+      /* load the starting position indicated by [Setup '1'] and
+       * [FEN position] */
+      if (headers['SetUp'] === '1') {
+        if (!('FEN' in headers && load(headers['FEN'], true))) {
+          // second argument to load: don't clear the headers
+          return false
+        }
+      }
+
+      /* delete header to get the moves */
+      var ms = pgn
+        .replace(header_string, '')
+        .replace(new RegExp(mask(newline_char), 'g'), ' ')
+
+      /* delete comments */
+      ms = ms.replace(/(\{[^}]+\})+?/g, '')
+
+      /* delete recursive annotation variations */
+      var rav_regex = /(\([^\(\)]+\))+?/g
+      while (rav_regex.test(ms)) {
+        ms = ms.replace(rav_regex, '')
+      }
+
+      /* delete move numbers */
+      ms = ms.replace(/\d+\.(\.\.)?/g, '')
+
+      /* delete ... indicating black to move */
+      ms = ms.replace(/\.\.\./g, '')
+
+      /* delete numeric annotation glyphs */
+      ms = ms.replace(/\$\d+/g, '')
+
+      /* trim and get array of moves */
+      var moves = trim(ms).split(new RegExp(/\s+/))
+
+      /* delete empty entries */
+      moves = moves
+        .join(',')
+        .replace(/,,+/g, ',')
+        .split(',')
+      var move = ''
+
+      for (var half_move = 0; half_move < moves.length - 1; half_move++) {
+        move = move_from_san(moves[half_move], sloppy)
+
+        /* move not possible! (don't clear the board to examine to show the
+         * latest valid position)
+         */
+        if (move == null) {
+          return false
+        } else {
+          make_move(move)
+        }
+      }
+
+      /* examine last move */
+      move = moves[moves.length - 1]
+      if (POSSIBLE_RESULTS.indexOf(move) > -1) {
+        if (has_keys(header) && typeof header.Result === 'undefined') {
+          set_header(['Result', move])
+        }
+      } else {
+        move = move_from_san(move, sloppy)
+        if (move == null) {
+          return false
+        } else {
+          make_move(move)
+        }
+      }
+      return true
+    },
+
+    header: function() {
+      return set_header(arguments)
+    },
+
+    ascii: function() {
+      return ascii()
+    },
+
+    turn: function() {
+      return turn
+    },
+
+    move: function(move, options) {
+      /* The move function can be called with in the following parameters:
+       *
+       * .move('Nxb7')      <- where 'move' is a case-sensitive SAN string
+       *
+       * .move({ from: 'h7', <- where the 'move' is a move object (additional
+       *         to :'h8',      fields are ignored)
+       *         promotion: 'q',
+       *      })
+       */
+
+      // allow the user to specify the sloppy move parser to work around over
+      // disambiguation bugs in Fritz and Chessbase
+      var sloppy =
+        typeof options !== 'undefined' && 'sloppy' in options
+          ? options.sloppy
+          : false
+
+      var move_obj = null
+
+      if (typeof move === 'string') {
+        move_obj = move_from_san(move, sloppy)
+      } else if (typeof move === 'object') {
+        var moves = generate_moves()
+
+        /* convert the pretty move object to an ugly move object */
+        for (var i = 0, len = moves.length; i < len; i++) {
+          if (
+            move.from === algebraic(moves[i].from) &&
+            move.to === algebraic(moves[i].to) &&
+            (!('promotion' in moves[i]) ||
+              move.promotion === moves[i].promotion)
+          ) {
+            move_obj = moves[i]
+            break
+          }
+        }
+      }
+
+      /* failed to find move */
+      if (!move_obj) {
+        return null
+      }
+
+      /* need to make a copy of move because we can't generate SAN after the
+       * move is made
+       */
+      var pretty_move = make_pretty(move_obj)
+
+      make_move(move_obj)
+
+      return pretty_move
+    },
+
+    undo: function() {
+      var move = undo_move()
+      return move ? make_pretty(move) : null
+    },
+
+    clear: function() {
+      return clear()
+    },
+
+    put: function(piece, square) {
+      return put(piece, square)
+    },
+
+    get: function(square) {
+      return get(square)
+    },
+
+    remove: function(square) {
+      return remove(square)
+    },
+
+    perft: function(depth) {
+      return perft(depth)
+    },
+
+    square_color: function(square) {
+      if (square in SQUARES) {
+        var sq_0x88 = SQUARES[square]
+        return (rank(sq_0x88) + file(sq_0x88)) % 2 === 0 ? 'light' : 'dark'
+      }
+
+      return null
+    },
+
+    history: function(options) {
+      var reversed_history = []
+      var move_history = []
+      var verbose =
+        typeof options !== 'undefined' &&
+        'verbose' in options &&
+        options.verbose
+
+      while (history.length > 0) {
+        reversed_history.push(undo_move())
+      }
+
+      while (reversed_history.length > 0) {
+        var move = reversed_history.pop()
+        if (verbose) {
+          move_history.push(make_pretty(move))
+        } else {
+          move_history.push(move_to_san(move))
+        }
+        make_move(move)
+      }
+
+      return move_history
+    }
+  }
+}
+
+/* export Chess object if using node or any other CommonJS compatible
+ * environment */
+if (typeof exports !== 'undefined') exports.Chess = Chess
+/* export Chess object for any RequireJS compatible environment */
+if (typeof define !== 'undefined')
+  define(function() {
+    return Chess
+  })
+</script>
+<script>
+const DATA = {"games":[["1955.??.??","USA-chJ","?","?","Pupols, Viktors","","","0-1","C40","Latvian Gambit Accepted: Bilguer Variation","e4 e5 Nf3 f5 Nxe5 Qf6 d4 d6 Nc4 fxe4 Nc3 Qg6 Ne3 Nf6 Bc4 c6 d5 Be7 a4 Nbd7 a5 Ne5 Be2 O-O O-O Bd7 Kh1 Kh8 Nc4 Nfg4 Qe1 Rf7 h3 Nf6 Nxe5 dxe5 Bc4 Rff8 Be3 Nh5 Kh2 Bd6 Bb3 Nf4 Bxf4 exf4 Qxe4 f3+ g3 Bf5 Qh4 Rae8 Rae1 Be5 Qb4 Qh6 h4 g5 Rh1 gxh4 Kg1 h3 dxc6 bxc6 Qc5 Qg7 Kh2 Qf6 Qxa7 Bd4 Qc7 Bxf2 Rxe8 Rxe8 Rf1 Bd4 Rxf3 Bxc3 bxc3 Re2+ Kh1 Be4 Qc8+ Kg7 Qg4+ Qg6 Qd7+ Kh6",""],["1955.??.??","USA-chJ","?","?","Ames, D.","","","1/2-1/2","C47","Four Knights Game: Italian Variation, Noa Gambit","e4 e5 Nf3 Nc6 Nc3 Nf6 Bc4 Nxe4 Bxf7+ Kxf7 Nxe4 d5 Neg5+ Kg8 d4 h6 Nh3 Bg4 dxe5 Nxe5 Nf4 c6 h3 Nxf3+ gxf3 Bf5 Be3 Bb4+ c3 Ba5 Rg1 Qe8 Nxd5 Qf7 Nf4 Re8 Qb3 Bc7 Qxf7+ Kxf7 Nh5 g6 Ng3 Bxh3 O-O-O Rd8 Rxd8 Bxd8 Rh1 Bg2 Rxh6 Rxh6 Bxh6 Bxf3 Be3",""],["1956.??.??","CAN-op","Montreal","?","Sharp, C.","","","1-0","C78","Ruy Lopez: Morphy Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O b5 Bb3 Be7 d4 d6 c3 O-O h3 Rb8 Nbd2 Bd7 Re1 Qe8 Nf1 Bd8 Ng3 Na5 Bc2 c5 dxe5 dxe5 Qd6 Nc6 Qxc5 Bb6 Qa3 Qc8 Be3 Re8 Bxb6 Rxb6 Qc5 Rb7 Rad1 Rc7 Qd6 Rd8 Qa3 a5 Rd2 b4 cxb4 Nxb4 Bb3 Rc5 Red1 Qc7 Ng5 Nc2 Rxc2 Rxc2 Qe7 Be8 Bxf7+ Bxf7 Rxd8+","Ruy Lopez"],["1956.??.??","New York","New York","?","Baron, S.","","","1-0","C98","Ruy Lopez: Closed, Chigorin Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Nc6 dxc5 dxc5 Nf1 Be6 Ne3 Rad8 Qe2 Rd7 Ng5 Rfd8 Nxe6 fxe6 a4 c4 axb5 axb5 b3 Nd4 cxd4 exd4 bxc4 dxe3 Bxe3 bxc4 Ra6 e5 Bb6 Qc8 Ra4 Rd2 Qxc4+ Qxc4 Rxc4 Rb8 Be3 Rd7 Ra1 Rbb7 Ra5 Bd6 Rc6 Bb8 Rb6 h6 g3 Kf7 Rxb7 Rxb7 Kg2 Rb2 Bd3 Rb4 Kf3 Rb2 Bc4+ Kg6 Ra6 Rb4 Rc6 Ra4 Be6 Rxe4 Bc4 Rxe3+ Kxe3 Ba7+ Kf3 e4+ Ke2 Bd4 Rc7 h5 Bb3 Bb6 Rb7 Bc5 Bc2 Kh6 Rc7 Bf8 Rc4","Ruy Lopez"],["1956.??.??","New York Rosenwald","New York","?","Hearst, Eliot Sanford","","","0-1","C64","Ruy Lopez: Classical Variation","e4 e5 Nf3 Nc6 Bb5 Bc5 O-O Nd4 Nxd4 Bxd4 c3 Bb6 d4 c6 Ba4 d6 Na3 Nf6 Re1 Qe7 Bg5 h6 Bh4 g5 Bg3 h5 f3 h4 Bf2 g4 Nc4 g3 hxg3 hxg3 Bxg3 Nh5 Bh2 Bc7 Ne3 Qh4 Qd2 Bd7 Bb3 Rh7 Qf2 Qg5 Rad1 Nf4 Bxf4 exf4 Nf5 O-O-O Kf1 Rh2 Bxf7 d5 Rd2 Rf8 Qg1 Rh7 exd5 Rhxf7 dxc6 Bxc6 d5 Bb5+ Ree2 Rxf5 Qxa7 Rxd5 c4 Bxc4 Qa8+ Bb8 Rc2 Rc5 Ke1 Bxe2 Qa5 Qg3+","Ruy Lopez"],["1956.??.??","New York Rosenwald","New York","?","Bernstein, Sidney Norman","","","1/2-1/2","C70","Ruy Lopez: Morphy Defense, Caro Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 b5 Bb3 d6 O-O Bg4 c3 Qf6 a4 b4 a5 Nge7 Ba4 Kd8 d3 Bxf3 gxf3 g5 Be3 Rg8 Nd2 Rg6 Nc4 Qe6 Kh1 Bg7 Rg1 Bf6 Rc1 Rb8 cxb4 Nd4 Bxd4 exd4 Qc2 Rxb4 e5 Rxc4 dxc4 Qxe5 Rge1 Qf4 Qe4 Be5 Qxf4 Bxf4 Rcd1 c5 b4 cxb4 Rxd4 Re6 Rb1 Nf5 Rd3 Re2 Kg1 Rd2 Rxd2 Bxd2 Rd1 Nd4 c5 b3 Rb1 Ne2+ Kf1 Nc3 Rxb3 Nxa4 cxd6 Kd7 Rb7+ Kxd6 Rxf7 Nc5 Rxh7 Bxa5 f4 gxf4 h4 Bc3 h5 Ne6 h6 Nf8 Ra7 Ke6 Rxa6+ Kf5 Ke2 Ng6 h7 Bh8 Ra8 Bf6 Kf3 Ne5+ Ke2 Nf7 Rf8 Kg6 Rxf7 Kxf7 Kf3","Ruy Lopez"],["1956.??.??","USA-op","?","?","Stevens, W.","","","1/2-1/2","C82","Ruy Lopez: Open, Dilworth Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Nxe4 d4 b5 Bb3 d5 dxe5 Be6 c3 Bc5 Nbd2 O-O Bc2 Nxf2 Rxf2 Bxf2+ Kxf2 f6 exf6 Qxf6 Kg1 Rae8 Nf1 Ne5 Ne3 Nxf3+ Qxf3 Qxf3 gxf3 Rxf3 Bd1 Rf7","Ruy Lopez"],["1956.??.??","Washington","Washington","?","Di Camillo, Attilio","","","1-0","C78","Ruy Lopez: Morphy Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O b5 Bb3 d6 c3 Bg4 h3 Bh5 d3 Be7 Nbd2 O-O Re1 Qd7 Nf1 Na5 Bc2 h6 g4 Bg6 Ng3 Nh7 Nf5 Nb7 d4 exd4 cxd4 Nd8 Nxe7+ Qxe7 d5 c5 Bf4 Nb7 Bg3 Rfe8 a4 Qf6 axb5 axb5 Kg2 Ng5 Nxg5 hxg5 Rxa8 Rxa8 e5 Bxc2 Qxc2 dxe5 Bxe5 Qd8 d6 c4 Qe4 Nc5 Qc6 Nd3 Re3 Rc8 Qb7 Rb8 Qd5 Nb4 Qc5 Nd3 Qd4 Rb6 d7 Rb7 Bc7 Nf4+ Kf1","Ruy Lopez"],["1957.??.??","Milwaukee","Milwaukee","?","Donnelly, W.","","","1-0","C87","Ruy Lopez: Closed, Averbakh Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 d6 c3 b5 Bb3 Na5 Bc2 c5 d4 Qc7 Nbd2 O-O Nf1 Nc6 Ne3 Re8 Nd5 Nxd5 exd5 Na5 dxe5 dxe5 Nxe5 Bd6 Bf4 Bb7 Qd3 g6 Qg3 Rad8 Nd3 Nc4 b3 Bxf4 Qxf4 Qxf4 Rxe8+ Rxe8 Nxf4 Na3 Bd3 c4 bxc4 bxc4 Bf1 g5 Nh5 Re5 d6 Kf8 Nf6 Re6 Rd1","Ruy Lopez"],["1957.??.??","New York m3","New York","2","Euwe, Max","","","1/2-1/2","C83","Ruy Lopez: Open, Malkin Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Nxe4 d4 b5 Bb3 d5 dxe5 Be6 c3 Be7 Nbd2 O-O Qe2 Nc5 Nd4 Nxb3 N2xb3 Qd7 Nxc6 Qxc6 Be3 Qc4","Ruy Lopez"],["1957.??.??","USA-chJ","?","?","Walker, RG.","","","1-0","C70","Ruy Lopez: Morphy Defense, Norwegian Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 b5 Bb3 Na5 O-O Nxb3 axb3 d6 d4 f6 Nh4 Ne7 Nc3 Be6 Be3 g5 Qf3 Bg7 dxe5 dxe5 Nf5 Bxf5 exf5 O-O Rad1 Qc8 Bc5 Nxf5 Bxf8 Bxf8 Nd5 Kg7 g4","Ruy Lopez"],["1957.??.??","USA-chJ","?","?","Haines, W.","","","1-0","C97","Ruy Lopez: Closed, Chigorin Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Bd7 Nf1 Rfe8 Ne3 cxd4 cxd4 Nc4 Nxc4 bxc4 Bd2 Rad8 Bc3 Bf8 Qd2 g6 Ba5 Qb8 Bxd8 Qxd8 b3 cxb3 Bxb3 Qb6 Rab1 Qd8 Bc4 Nxe4 Rxe4 Bf5 Ree1 Bxb1 Rxb1 e4 Nh2 Qh4 Rb7 Bh6 Qe2 Rf8 Ng4 Qg5 Qe3 Qxg4 hxg4 Bxe3 fxe3 h6 Rd7 Kh7 Rxd6 Rc8 Bb3","Ruy Lopez"],["1957.??.??","USA-op","?","?","Rinaldo, J.","","","1-0","C97","Ruy Lopez: Closed, Chigorin, Yugoslav System","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Bd7 Nf1 Rfe8 Ne3 g6 Bd2 Bf8 Rc1 Bg7 b4 Nc6 Nd5 Nxd5 exd5 Ne7 dxc5 Nxd5 Bb3 Nf6 cxd6 Qxd6 Ng5 Rf8 Be3 Qxd1 Rexd1 h6 Ne4 Nxe4 Rxd7 Rac8 c4 Ng5 Bxg5 hxg5 c5","Ruy Lopez"],["1957.??.??","USA-op","?","?","Shipman, Walter","","","1/2-1/2","C92","Ruy Lopez: Closed","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d6 h3 a5 d4 exd4 Nxd4 Nxd4 cxd4 Bb7 Nc3 b4 Nd5 Nxd5 Bxd5 Bxd5 exd5 Bg5 Qg4 Bf6 Be3","Ruy Lopez"],["1958.??.??","Belgrade m","Belgrade","1","Janosevic, Dragoljub","","","1/2-1/2","C96","Ruy Lopez: Closed, Chigorin Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Bb7 Nbd2 cxd4 cxd4 Rc8 Nf1 Qc7 Bd3 d5 dxe5 Nxe4 Ng3 f5 exf6 Bxf6 Nxe4 dxe4 Bxe4 Rcd8 Qe2 Rfe8 Nd2 Qe5 Qg4 Qg5 Kf1 Qxg4 hxg4 Bc8 f3 g6 Bc2 Be6 Ne4 Bd4 Be3 Bxb2 Rab1 Nc4 Rxb2 Nxb2 Nf6+ Kf7 Nxe8 Rxe8 Bc1 Bc4+ Kf2 Rxe1 Kxe1 Nd3+ Bxd3 Bxd3","Ruy Lopez"],["1958.??.??","USA-ch","New York","2","Kalme, G.","","","1-0","C98","Ruy Lopez: Closed, Chigorin Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d6 h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Nc6 dxc5 dxc5 Nf1 Be6 Ne3 Rad8 Qe2 g6 Ng5 Bc8 a4 c4 axb5 axb5 b3 b4 Qxc4 h6 Nd5 Nxd5 exd5 hxg5 Qxc6 Qxc6 dxc6 bxc3 Rxe5 Bf6 Rea5 Rfe8 Bxg5 Bxg5 Rxg5 Rd2 Rc1 Ree2 Bxg6 fxg6 Rxc3 Kh7 b4 Re1+ Kh2 Rxf2 b5 Rb2 Kg3 Kh6 Rcc5 Re3+ Kf4 Reb3 Rgd5 Rxg2 Rd8 Be6 Ke5 Bxh3 Rh8+ Kg7 Rxh3 Rxh3 c7 Rh8 Rd5 Re2+ Kd6 Kf6 b6 Rb2 Kc6 Rc8 Rd8 Rc2+ Kb7 R8xc7+ bxc7 Kf5 c8=Q+ Rxc8 Rxc8 g5 Kc6 g4 Kd5 Kf4 Kd4 Kf3 Kd3","Ruy Lopez"],["1958.??.??","USA-ch","New York","10","Bisguier, Arthur Bernard","","","1-0","C99","Ruy Lopez: Closed, Chigorin Defense, Panov System","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d6 h3 Na5 Bc2 c5 d4 Qc7 Nbd2 cxd4 cxd4 Bd7 Nf1 Rfc8 Ne3 Nc6 a3 a5 d5 Nd8 Bd2 a4 Bb4 Bf8 Bd3 Nb7 Qe2 Qb6 Nd2 Nc5 Kh2 g6 Rac1 Bh6 Bb1 Rc7 Qf3 Bg5 g3 h5 Kg2 Kg7 Rf1 h4 Qe2 Rh8 Rh1 Nh5 Nf3 hxg3 fxg3 Bf4 Be1 Qb8 Bf2 Qc8 h4 Bg4 Rc3 Bd7 Nf1 Bh6 N1d2 Nf6 Be3 Bxe3 Qxe3 Ng4 Qe2 Nb3 Rxc7 Qxc7 Nxb3 axb3 Nh2 Qc4 Bd3 Qd4 Nxg4 Bxg4 Qxg4 Qxd3 Rf1 Rf8 h5 Rh8 Qf3 Qxf3+ Rxf3 gxh5 Rxb3 Rb8 Rb4 f5 exf5 Kf6 a4 Ra8 axb5 Kxf5 b6 e4 Kf2 Ke5 Ke3 Kxd5 Rxe4 Rb8 Rh4 Rxb6 Rxh5+ Ke6 Rh2 Ke5 Kd3 Rb3+ Kc4 Rxg3 Re2+ Kf5 Kd5 Rd3+ Kc6 d5 b4 d4 Kd5 Rd1 Rf2+ Kg4 Kc4 d3 Kc3 Rb1 Rd2 Kf4 Rxd3 Ke4 Rd8 Rc1+ Kb3 Ke5 Ka4 Ke6 Rd2 Rc7 b5 Rd7 Rxd7 Kxd7 Ka5 Kc7 Ka6 Kb8 Kb6 Kc8 Ka7","Ruy Lopez"],["1958.??.??","Portoroz Interzonal","Portoroz","1","Neikirkh, Oleg","","","1/2-1/2","C67","Ruy Lopez: Berlin Defense, l'Hermet Variation","e4 e5 Nf3 Nc6 Bb5 Nf6 O-O Nxe4 d4 Nd6 Bxc6 dxc6 dxe5 Nf5 Qe2 Nd4 Nxd4 Qxd4 Nc3 Bg4 Qe3 Qxe3 Bxe3 Bb4 Ne4 Bf5 c3 Bxe4 cxb4 a5 bxa5 Rxa5","Ruy Lopez"],["1958.??.??","Portoroz Interzonal","Portoroz","3","Rossetto, Hector","","","1/2-1/2","C99","Ruy Lopez: Closed, Chigorin Defense, Panov System","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O b5 Bb3 Be7 Re1 O-O h3 d6 c3 Na5 Bc2 c5 d4 Qc7 Nbd2 cxd4 cxd4 Bb7 Nf1 Rac8 Re2 Nc6 Ng3 Rfe8 Bg5 g6 Rc1 Qb8 Qd2 a5 a3 exd4 Nxd4 Nxd4 Qxd4 Rc4 Qd1 Nd7 Bxe7 Rxe7 Rd2 Rc6 b4 Qc7 Ne2 axb4 Nd4 Rb6 axb4 Qc4 Bb3 Qxb4 Rb2 Kg7 Rbb1 Bxe4 Bc2 Bxc2 Rxc2 Qa4 Ra1 Qb4 Nc6 Rxc6 Rxc6 Re6 Rb1 Qe4 Rcc1 Re5 Qc2 Qb7 Rb3 Nc5 Rb4 Ne6 Qc3 Kg8 Qc8+ Qxc8 Rxc8+ Kg7 g3 Rd5 Rb8 Nd4 Kg2 h5 Rb2 Kf6 Rd2 Ke5 Rf8 Ne6 f4+ Ke4 Rxd5 Kxd5 Rxf7 b4 f5 gxf5 Rxf5+ Kc4 Rxh5 b3 Rf5 b2 Rf1 Kc3 h4 Kc2 Rf2+ Kc3 Rf1 Kc2 Kf3 d5 Rf2+ Kc3 Rf1 Kc2 h5 b1=Q Rxb1 Kxb1 h6 Kc2 h7 Ng5+ Ke3 Nxh7 Kd4 Nf6 g4 Nxg4 Kxd5","Ruy Lopez"],["1958.??.??","Portoroz Interzonal","Portoroz","6","Bronstein, David I","","","1/2-1/2","C92","Ruy Lopez: Closed, Karpov Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Nd7 d4 Nb6 Be3 Rb8 Nbd2 Bf6 d5 Na5 Bc2 Nac4 Nxc4 Nxc4 Bc1 c6 dxc6 Qc7 Nh2 Qxc6 Ng4 Be7 Ne3 Be6 Qe2 Rfd8 Rd1 Nxe3 Bxe3 a5 Bd3 a4 a3 Bf6 Bc2 d5 exd5 Bxd5 Qg4 Be6 Qg3 Bc4 Bg5 Re8 Bxf6 Qxf6 Rd2 Rbd8 Rad1 Rxd2 Rxd2 h5 Qe3 Qf4 Qe2 h4 Rd4 Qf6 Qe4 g6 Rd2 Qf4 Rd1 Qxe4 Bxe4 Kf8 Rd7 Rb8 g3 hxg3 fxg3 Be6 Rd2 Ke7 h4 f5 Bc2 Rh8 Kf2 Bc4 Ke3 Ke6 Rf2 Kd6 Rd2+ Ke7 Rf2 Ke6 Rd2 g5 hxg5 Rh3 Kf2 Rh2+ Ke1 Rh1+ Kf2 e4 Bd1 Rf1+ Ke3 Re1+ Kf2 Rf1+ Ke3 Re1+ Kf2","Ruy Lopez"],["1958.??.??","Portoroz Interzonal","Portoroz","12","Tal, Mihail","","","1/2-1/2","C92","Ruy Lopez: Closed, Karpov Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O h3 d6 c3 Nd7 d4 Nb6 dxe5 Nxe5 Nxe5 dxe5 Qh5 Qd6 Nd2 Be6 Nf3 Bxb3 axb3 Nd7 b4 Rfd8 Bg5 f6 Be3 Qe6 Red1 c5 Nh4 Bf8 Nf5 g6 Qg4 Kf7 Nh6+ Bxh6 Qxe6+ Kxe6 Bxh6 cxb4 cxb4 Rdc8 Be3 Rc4 Rd2 Rxb4 Rad1 Nf8 Rd6+ Kf7 Rb6 Rxb2 Rdd6 a5 Rb7+ Kg8 Rxf6 Re8 Rff7 Ne6 Rxh7 a4 Ra7 Ra8 Rhg7+ Kh8 Rh7+ Kg8 Rhg7+","Ruy Lopez"],["1958.??.??","Portoroz Interzonal","Portoroz","14","Sherwin, James T","","","1-0","C92","Ruy Lopez: Closed","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 a5 d3 Bb7 Nbd2 a4 Bc2 Nb8 Nf1 c5 d4 cxd4 cxd4 Nc6 Ng3 g6 Bd2 Re8 d5 Na5 b3 Bc8 bxa4 bxa4 Bxa4 Bd7 Bxd7 Nxd7 Bb4 Qb6 a3 Nc5 Qe2 Reb8 Nd2 Nab3 Nxb3 Nxb3 Rab1 Nd4 Qd3 Qa6 Qxa6 Rxa6 Rb2 Rba8 Ra1 Ra4 Nf1 Nb5 Bd2 Rxa3 Rxa3 Nxa3 Rb7 Kf8 Ne3 Rc8 f3 h5 Bb4 Nc2 Nxc2 Rxc2 Rb6 Ke8 Bxd6 Bxd6 Rxd6 h4 Ra6 Rc1+ Kh2 g5 Ra2 Rf1 Ra6 Rd1 Rb6 Ke7 Rb2 Rf1 Rb3 Rd1 g4 Rd2+ Kg1 Rd1+ Kf2 Rd2+ Ke3 Rh2 Rb7+ Kf6 Rb6+ Ke7 Rb7+ Kf6 Rb6+ Ke7 Rh6 Rxh3 d6+ Kd7 Rf6 Rh2 Rxf7+ Kxd6 Rf6+ Ke7 Rg6 h3 Rxg5 Ke6 Rh5 Kf6 Kd3 Kg6 Rh8 Kg7 Rh4 Kg6 Rh5 Kf6 Ke3 Ke6 f4 exf4+ Kxf4 Rh1 Kg3 Re1 Kxh3 Rxe4 Rf5 Ra4 Rf8 Ke7 Rf3 Ke6 Kh4 Ra8 g5 Rh8+ Kg4 Ke7 g6 Rf8 Rf5 Rh8 Kg5 Rh1 Rf2 Rh3 g7 Rg3+ Kh6 Rh3+ Kg6 Rg3+ Kh7 Rh3+ Kg8","Ruy Lopez"],["1958.??.??","Portoroz Interzonal","Portoroz","16","Szabo, Laszlo","","","1/2-1/2","C88","Ruy Lopez: Closed","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O h3 Bb7 c3 d5 exd5 Nxd5 d3 Qd6 Nbd2 Rad8 Ne4 Qg6 Ng3 Bc5 d4 exd4 cxd4 Ndb4 Be3 Nxd4 Nxd4 Bxd4 Bxd4 c5 Bxc5 Rxd1 Raxd1 Nd3 Bxf8 Nxe1 Rd8 h5 Bb4+ Kh7 Rd6 Qb1 Rd1 Qg6 Rd6 Qb1 Rd1 Qg6 Rxe1 h4 Re3 hxg3 Rxg3 Qb1+ Kh2 Qf5 Kg1","Ruy Lopez"],["1958.??.??","Portoroz Interzonal","Portoroz","18","Matanovic, Aleksandar","","","1/2-1/2","C97","Ruy Lopez: Closed, Chigorin, Yugoslav System","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d6 h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Bd7 Nf1 Rfe8 Ne3 g6 dxe5 dxe5 Nh2 Rad8 Qf3 Be6 Nhg4 Nxg4 Nxg4 Bxg4 hxg4 c4 g3 Nb7 Kg2 Nc5 Rh1 f6 Be3 Rf8 Rad1 Rxd1 Rxd1 Rd8 Bxc5 Qxc5 Rxd8+ Bxd8 Qd1 Bb6 Qd2 Kf8 a4 Ke7 g5 fxg5 Qxg5+ Kf7 Qd2 Kf6 axb5 axb5 Bd1","Ruy Lopez"],["1959.??.??","Candidats Tournament","Bled/Zagreb/Belgrade","12","Olafsson, Fridrik","","","1-0","C75","Ruy Lopez: Morphy Defense, Modern Steinitz Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 d6 c3 Bd7 d4 Nge7 Bb3 h6 Nbd2 Ng6 Nc4 Be7 Ne3 O-O O-O Kh7 g3 Bf6 Re1 Kh8 a3 Qe8 h4 Bd8 Nf5 Nge7 dxe5 dxe5 Qc2 Be6 Bxe6 fxe6 Nxe7 Bxe7 Qe2 Qg6 b4 Rf6 Nh2 Raf8 h5 Qe8 Be3 Bd6 a4 Nb8 Rec1 Qc6 f3 Qe8 g4 Nc6 b5 Na5 Rd1 Nb3 Rab1 Nc5 a5 Na4 Rdc1 Bc5 Bxc5 Nxc5 Qe3 Qe7 Rd1 Rf4 Rb4 Ra8 Rdb1 Kh7 Kh1 Qd6 R4b2 axb5 Rxb5 Nd7 Rxb7 Rxa5 R7b2 Qe7 Rg1 Qg5 c4 Rc5 Qc3 Rf8 Rd1 Rf7 Rb5 Qf4 Kg2 Rc6 c5 Ra6 c6 Ra2+ Rb2 Rxb2+ Qxb2 Nf6 Qb3 Re7 Rd8 Qg5 Kh3 g6 Qb4 Rg7 hxg6+ Kxg6 Qd2 Qxd2 Rxd2 Ng8 Rd7 Nf6 Rd3 Ng8 Rc3 Ne7 Nf1 Rg8 Ng3 Kg5 Nh5 Rd8 Rc5 Ng6 Kg3 Rd3 Ng7 Kf6 Ne8+ Ke7 Nxc7 Kd6 Na6 Ne7 c7 Nc8 Rc1 Rd2 Rh1 Ra2 Rd1+ Ke7 Nb4","Ruy Lopez"],["1959.??.??","Candidats Tournament","Bled/Zagreb/Belgrade","18","Gligoric, Svetozar","","","1/2-1/2","C74","Ruy Lopez: Morphy Defense, Modern Steinitz Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 d6 c3 Nf6 O-O Be7 d4 Bd7 Nbd2 O-O Re1 Re8 a3 Bf8 b4 d5 Bb3 Bg4 h3 Bh5 dxe5 Nxe5 g4 Nxf3+ Nxf3 dxe4 gxh5 exf3 Rxe8 Qxe8 Qxf3 Qe1+ Kg2 Re8 h6 c6 Bc2 Qe2 Qxe2 Rxe2 Bd1 Re8 Be3 Nd5 Bd2 gxh6 c4 Bg7 Rc1 Nc7 Be3 Ne6 c5 Nd4 Bg4 f5 Bh5 Re4 Rd1 Kf8 Rd3 Ke7 Bd1 Ne6 Kf3 Nd4+ Kg3 Ne6 Kf3 Nd4+ Kg2 Ne6 Kf3","Ruy Lopez"],["1959.??.??","Mar del Plata","Mar del Plata","?","Shocron, Ruben","","","1-0","C97","Ruy Lopez: Closed, Chigorin, Yugoslav System","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d6 h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Bd7 Nf1 Rfe8 Ne3 g6 dxe5 dxe5 Nh2 Rad8 Qf3 Be6 Nhg4 Nxg4 hxg4 Qc6 g5 Nc4 Ng4 Bxg4 Qxg4 Nb6 g3 c4 Kg2 Nd7 Rh1 Nf8 b4 Qe6 Qe2 a5 bxa5 Qa6 Be3 Qxa5 a4 Ra8 axb5 Qxb5 Rhb1 Qc6 Rb6 Qc7 Rba6 Rxa6 Rxa6 Rc8 Qg4 Ne6 Ba4 Rb8 Rc6 Qd8 Rxe6 Qc8 Bd7","Ruy Lopez"],["1959.??.??","Mar del Plata","Mar del Plata","?","Pachman, Ludek","","","0-1","C75","Ruy Lopez: Morphy Defense, Modern Steinitz Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 d6 c3 Bd7 d4 Nge7 Bb3 h6 O-O Ng6 Nbd2 Be7 Nc4 Bg5 Ne3 Bxe3 Bxe3 O-O h3 Re8 Nh2 Qe7 dxe5 dxe5 Qh5 Na5 Bc2 Nc4 Bc1 Nf4 Qf3 Rad8 Bxf4 exf4 Qxf4 Bc6 Ng4 h5 Ne3 Nxb2 Nf5 Qf6 Qxc7 Qxc3 Rac1 Qf6 Rfe1 Nd3 Bxd3 Rxd3 Qf4 g6 Rc5 Re6 Qb8+ Rd8 Qf4 gxf5 Rxf5 Qg7 Rxh5 Rde8 f3 Re5 Rh4 Rg5 Rg4 Rxg4 hxg4 Qd4+ Re3 Qe5 Qf5 Qxf5 gxf5 Rd8 Kf2 Bb5 Ke1 Kg7 e5 Rd4 g4 Kh6 e6 f6 Kf2 Rd2+ Kg3 Kg7 Rc3 Bc6 a3 Re2 Kf4 a5 Rd3 a4 Rd8 Rf2 Rd3 b5 Rc3 Rxf3+ Rxf3 Bxf3","Ruy Lopez"],["1959.??.??","Mar del Plata","Mar del Plata","?","Sanguineti, Raul","","","1-0","C97","Ruy Lopez: Closed, Chigorin Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Re8 Nf1 Bf8 Bg5 Nd7 Ne3 Nb6 Rc1 f6 Bh4 Be6 Nd5 Qb7 b4 Nac4 Nxb6 Qxb6 Bb3 cxd4 cxd4 a5 bxa5 Nxa5 Bxe6+ Rxe6 Qd3 Ree8 Rb1 b4 Re2 Reb8 Reb2 Qb5 Qxb5 Rxb5 d5 Rab8 Nd2 Kf7 f3 g6 Be1 Bh6 a4 Be3+ Kf1 R5b7 Nb3 Nc4 Ra2 Ra8 Ke2 Na3 Rbb2 Bg1 a5 Raa7 Ra1 Bc5 Rc1 Rc7 Bd2 Nb5 Rbc2 Na3 Rb2 Nb5 Kd3 Na3 Nxc5 dxc5 Be3 c4+ Ke2 b3 Bb6 Rcb7 Ra1 Nc2 Rxc2 bxc2 Rc1 Ra8 Rxc2 Rc8 Kd2 Ke7 Kc3 Kd7 Kb4 Rbb8 Rxc4 Rxc4+ Kxc4 Rc8+ Bc5 Rb8 a6 Rb2 a7 Ra2 Kb5 Kc7 d6+ Kb7 d7 Rd2 a8=Q+","Ruy Lopez"],["1959.??.??","Mar del Plata","Mar del Plata","?","Letelier, Rene","","","0-1","C97","Ruy Lopez: Closed, Chigorin Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Re8 Nf1 Bd7 Ne3 Bf8 dxe5 dxe5 Nh2 Rad8 Qf3 Be6 Nhg4 Nd7 Nd5 Qb8 h4 Nc4 h5 h6 b3 Nd6 Qg3 Kh8 f4 Bxd5 exd5 e4 Ne5 Qb7 Rxe4 Nxe4 Nxf7+ Kg8 Nxh6+ Kh8 Nf7+ Kg8 Nxd8 Qxd5 Qd3 Qxd3 Bxd3 Nxc3 Bd2 Ne4 Re1 Ndf6 Bxe4 Nxe4 Nc6 Bd6 Bc1 Kf7 Bb2 Ng3 Ne5+ Bxe5 Rxe5 Rxe5 Bxe5 Nxh5 Kf2 Nf6 Kf3 g6 Bxf6 Kxf6 Ke4 Ke6 a4 Kd6 a5 Ke6 g3 Kd6 f5 gxf5+ Kxf5 Kd5 g4 Kd4 g5 c4 bxc4 b4 c5 b3 c6 b2 c7 b1=Q+ Ke6 Qb7 Kd7 Kd5 g6 Qc6+ Kd8 Qd6+","Ruy Lopez"],["1959.??.??","USA-ch","New York","1","Bisguier, Arthur Bernard","","","1-0","C42","Petrov's Defense: Cozio Attack","e4 e5 Nf3 Nf6 Nxe5 d6 Nf3 Nxe4 Qe2 Qe7 d3 Nf6 Bg5 Qxe2+ Bxe2 Be7 Nc3 Bd7 O-O-O Nc6 d4 h6 Bh4 O-O-O Bc4 Rdf8 Rde1 Bd8 d5 Nb8 Nd4 Re8 Ndb5 Bxb5 Bxb5 Rxe1+ Rxe1 Nxd5 Nxd5 Bxh4 g3 Bg5+ f4 c6 fxg5 hxg5 Re7 cxd5 Rxf7 Rxh2 Rxg7 Nc6 Rxg5 Ne5 Rg7 Rg2 Bd3 Nc4 Bxc4 dxc4 a4 d5 c3 Rg1+ Kd2 Rg2+ Kc1 Rg1+ Kc2 Ra1 Rg5 Rxa4 Rxd5 Kc7 g4 Kc6 Rd2 Ra5 Kd1 Rd5 Ke2 Rxd2+ Kxd2 Kd5 Ke3 Ke5 Kf3 a5 Ke3 a4 g5 Kf5 Kd4 Kxg5 Kxc4 Kf4 Kb4 Ke3 Kxa4 Kd2 Kb3 Kd3 c4 Kd2 Ka4 Kc2 Ka3 Kd3 Kb3 b6 Kb4 Kc2 Ka3 Kd3 Kb3 Kd2 Ka4 Kc2 b4","Petrov's Defense"],["1959.??.??","USA-ch","New York","8","Bernstein, Sidney Norman","","","1-0","C89","Ruy Lopez: Marshall Attack, Steiner Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d5 exd5 e4 dxc6 exf3 Qxf3 Bg4 Qg3 Bd6 Qh4 Re8 f3 Bf5 d4 Bxh2+ Kxh2 Ng4+ Kg3 Qxh4+ Kxh4 Rxe1 fxg4 Rxc1 gxf5 Rd8 a4 b4 d5 Rb8 d6 cxd6 Bc4 Rc8 Bxa6 Rxc6 Bb5 Rb6 c4 d5 a5 g5+ Kxg5 h6+ Kg4 Rb8 a6 dxc4 a7 Ra8 Bc6 h5+ Kg5 Rxb1 Rxb1 Rxa7 Rc1 Ra2 Rxc4 Rxb2 f6","Ruy Lopez"],["1959.??.??","Santiago","Santiago","1","Sanchez, Luis A","","","1-0","C92","Ruy Lopez: Closed, Karpov Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Nd7 d4 Nb6 dxe5 Nxe5 Nxe5 dxe5 Qh5 Bf6 Nd2 g6 Qf3 Qe7 Qg3 Bh4 Qh2 Bf6 Nf3 Be6 Bc2 Bd7 Bh6 Rfe8 h4 Bg7 Bg5 f6 Bc1 Bf8 h5 g5 Qg3 Qg7 Nh2 h6 Ng4 Qf7 Qf3 Bg7 Ne3 Be6 Nf5 Bf8 b3 Rad8 Be3 Rd7 Qh3 Kh7 Bd1 Nc8 Bg4 Nd6 Ng3 Bxg4 Qxg4 Qe6 Qxe6 Rxe6 Red1 Rd8 a4 bxa4 Rxa4 Nb7 Rd5 Rc6 c4 Kg8 c5 Kf7 Rb4 Rb8 Rd7+ Ke6 Rh7 Rb6 cxb6 Bxb4 bxc7 Rc8 Nf5 Bf8 g4 Na5 b4 Bxb4 Bd2","Ruy Lopez"],["1959.??.??","Santiago","Santiago","5","Stekel Grunberg, Moises","","","1-0","C76","Ruy Lopez: Morphy Defense, Modern Steinitz Defense, Fianchetto Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 d6 c3 Bd7 d4 g6 O-O Bg7 Bg5 Nge7 dxe5 dxe5 Qe2 h6 Be3 Qc8 Rd1 Bg4 h3 Bxf3 Qxf3 O-O Bc5 Qe6 Nd2 Rad8 Bxc6 bxc6 Qe2 Rb8 Qxa6 Bf6 b4 Rfd8 a4 g5 Kh2 g4 Qc4 Qc8 Nf1 Ng6 Ne3 gxh3 g3 Bg5 Nf5 h5 Kxh3 Rd7 Kg2 Qd8 Qe2 h4 Rxd7 Qxd7 Qg4 Qd8 Rd1 Qf6 gxh4 Bxh4 Be7","Ruy Lopez"],["1959.??.??","Santiago","Santiago","7","Letelier, Rene","","","1-0","C97","Ruy Lopez: Closed, Chigorin Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Re8 Nf1 Bd7 Ne3 Bf8 Bd2 Rab8 b4 Nc6 bxc5 exd4 Nd5 Nxd5 exd5 dxc3 Bxc3 Rxe1+ Qxe1 Ne7 cxd6 Qxd6 Be5 Qb6 Bxb8 Qxb8 Rd1 Nc8 Ne5 Qd6 Nxd7 Qxd7 Qa5 Qd6 Bb3 Ne7 Rc1 Nxd5 Qd2 Qf4 Qxf4 Nxf4 Rc7 Ne6 Ra7 b4 Rxa6 Nc7 Ra7 Bd6 Rb7 Kf8 Rb6 Ne8 Ba4","Ruy Lopez"],["1959.??.??","Santiago","Santiago","9","Flores Alvarez, Rodrigo","","","1/2-1/2","C92","Ruy Lopez: Closed, Karpov Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Nd7 d4 Nb6 dxe5 Nxe5 Nxe5 dxe5 Qh5 Qd6 Nd2 Be6 Nf3 Bxb3 axb3 Nd7 b4 Qe6 Be3 Rfd8 Qf5 Qxf5 exf5 f6 Red1 c5 bxc5 Nxc5 Bxc5 Bxc5 Kf1 b4 Nd2 bxc3 bxc3 a5 Ke2 a4 Ne4 Rdc8 Kd3 a3 Kc2 Ra7 Rdb1 Be7 Rb5 Kf7 Rab1 Rcc7 Rd1 g6 g4 Rcb7 Rxb7 Rxb7 Rb1 Ra7 Kb3 Rd7 Kc2 Ra7 Ra1 gxf5 gxf5 Rb7 Ra2 Rc7 Kb1 Rb7+ Ka1 Rc7 Rd2 Ke8 Ka2 Rd7 Rxd7 Kxd7 c4 Kc6 Kb3 Kb6 h4 Kc6 h5 Kb6 Nc3 Kc5 Nd5 Bd8 Ne3 Kd4 Kxa3 Ke4 Kb4 Kf3 c5 Kxf2 Ng4+ Kg3 Nxf6 Bxf6 c6 Bd8 f6 e4 f7 Be7+","Ruy Lopez"],["1959.??.??","Zuerich","Zuerich","?","Unzicker, Wolfgang","","","1-0","C97","Ruy Lopez: Closed, Chigorin, Yugoslav System","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Bd7 Nf1 Rfe8 Ne3 g6 dxe5 dxe5 Nh2 Rad8 Qf3 Be6 Nhg4 Nxg4 hxg4 Qc6 g5 Nc4 Ng4 Bxg4 Qxg4 f6 gxf6 Bxf6 a4 Nb6 axb5 axb5 Be3 Ra8 Red1 Kh8 b3 Bg7 Qh4 Bf6 Bg5 Bxg5 Qxg5 Rxa1 Rxa1 Nd7 Bd1 Nf6 Ra7 Qd6 Be2 Re7 Rxe7 Qxe7 Bxb5 Kg7 Be2 Qc7 Qe3 Qa5 g3 Qa3 Kg2 Qa5 Qd3 Qb6 Qc4 Qc6 Bd3 Qb6 b4 cxb4 cxb4 Ng4 Qc5 Qxc5 bxc5 Kf7 f4 Ke7 Kf3 Nf6 Bb5 Ke6 Bc4+ Ke7 c6 Ne8 fxe5 h6 Ke3 Nc7 Kd4 h5 Ke3 g5 Be2 h4 gxh4 gxh4 Bc4 Ne8 Kf4 Kd8 Kg4 Kc7 Bf7 Ng7 Kxh4 Kxc6 Kg5","Ruy Lopez"],["1959.??.??","Zuerich","Zuerich","?","Keres, Paul","","","1-0","C99","Ruy Lopez: Closed, Chigorin Defense, Panov System","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d6 h3 Na5 Bc2 c5 d4 Qc7 Nbd2 cxd4 cxd4 Bb7 Nf1 Rac8 Bd3 Nc6 Ne3 Rfe8 Nf5 Bf8 Bg5 Nd7 Rc1 Qb8 Bb1 Nxd4 N3xd4 Rxc1 Bxc1 exd4 Nh6+ gxh6 Qg4+ Kh8 Qxd7 Bd5 Qf5 Re5 Qf3 f5 Bf4 Re8 Qh5 Bxe4 f3 Bc6 Rc1 Bd7 Bxh6 Re6 Bxf8 Qxf8 Qh4 Qf6 Qxf6+ Rxf6 Kf2 Kg7 Rc7 Rf7 Ke2 f4 Ra7 Kf6 Rxa6 Re7+ Kf2 Be6 Rxd6 Ke5 Rc6 Bd5 Rh6 Rc7 Rh5+ Kd6 Rh6+ Ke5 Rh5+ Kd6 Rf5 Rc1 Bd3 Rd1 Ke2 Rg1 Kf2 Rd1 Ke2 Rg1 Rg5 Bxa2 Bxb5 Rb1 Kd3 h6 Rh5 Rxb2 Kxd4 Rxg2 Rxh6+ Ke7 Ke4 Rg5 Ba6 Bf7 Bc8 Rg6 Rh7 Kf8 Bg4 Rg7 Rh6 Rg6 Rxg6 Bxg6+ Kxf4 Kg7 Kg5 Bd3 f4 Be4 h4 Bd3 h5 Be4 h6+ Kh8 Bf5 Bd5 Bg6 Be6 Kf6 Bc4 Kg5 Be6 Bh5 Kh7 Bg4 Bc4 f5 Bf7 Bh5 Bc4 Bg6+ Kg8 f6","Ruy Lopez"],["1959.??.??","Zuerich","Zuerich","?","Keller, Dieter","","","0-1","C92","Ruy Lopez: Closed, Karpov Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Nd7 d4 Nb6 dxe5 Nxe5 Nxe5 dxe5 Qh5 Bf6 Nd2 Qe7 Nf1 Be6 Ne3 g6 Qf3 Bxb3 axb3 Bg7 b4 c6 g3 Qe6 h4 f5 h5 f4 Nf1 gxh5 Qxh5 Rf6 Nh2 Rg6 Nf3 fxg3 fxg3 Rxg3+ Kh2 Qg4 Qxg4 Rxg4 Rg1 Rxg1 Kxg1 Na4 Kf1 c5 b3 Nxc3 bxc5 Nxe4 c6 Nc5 Be3 Nxb3 Ra2 a5 Rg2 Kh8 Ng5 Rf8+ Ke1 Nd4 Bxd4 exd4 Ne6 Re8 c7 Be5 Kd2 Rc8 Rg5 Bxc7 Rxb5 Bd6 Kd3 Ra8 Rb6 Bg3 Rb7 a4 Ng5 a3 Rxh7+ Kg8 Rh1 a2 Ra1 Be5 Ne6 Ra3+ Ke4 Bf6 Kf5 Kf7 Ng5+ Bxg5","Ruy Lopez"],["1960.??.??","Buenos Aires","Buenos Aires","18","Wade, Robert Graham","","","1-0","C92","Ruy Lopez: Closed","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d6 h3 Qd7 d4 Re8 Nbd2 Bf8 d5 Ne7 Nf1 g6 c4 Bg7 c5 Nh5 a4 dxc5 axb5 Bb7 bxa6 Bxa6 Be3 c4 Ba4 Bb5 Bxb5 Qxb5 Qc2 f5 Rxa8 Rxa8 g4 fxe4 Qxe4 Nf6 Qxe5 Qxd5 Qxe7 Qxf3 Qe6+ Kh8 Bd4 Rf8 Re3 Qb7 Qxc4 Nd5 Rb3 Nb6 Bxg7+ Kxg7 Qd4+ Kg8 Ne3 Rf7 g5 h5 Rd3 Qf3 Ng4 hxg4 Rxf3 gxf3 Qe4 Kg7 Qe5+ Kg8 h4 Kh7 b4 Nc4 Qe6 Nd6 b5","Ruy Lopez"],["1960.??.??","Leipzig olm fin-A","Leipzig","3","Bobotsov, Milko G","","","1-0","C92","Ruy Lopez: Closed, Kholmov Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Be6 d4 Bxb3 axb3 exd4 cxd4 d5 e5 Ne4 Nc3 f5 exf6 Bxf6 Nxe4 dxe4 Rxe4 Qd5 Rg4 h5 Rf4 Nb4 Be3 Rad8 Rc1 c5 Qd2 Nc6 Qc2 Nxd4 Bxd4 Bxd4 Rxf8+ Rxf8 b4 Rxf3 gxf3 Qxf3 bxc5 Qg3+ Kf1 Qxh3+ Ke1 Qh1+ Ke2 Qc6 Qb3+ Kh8 Qf3 Qe6+ Kf1 Qh6 Qd1","Ruy Lopez"],["1960.??.??","Leipzig olm prel","Leipzig","9","Unzicker, Wolfgang","","","1-0","C96","Ruy Lopez: Closed, Chigorin Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 cxd4 cxd4 Bb7 Nbd2 Nc6 d5 Nb4 Bb1 a5 Nf1 Na6 Ng3 Bc8 Bd3 Bd7 Be3 Qb8 Rc1 Bd8 Qe2 Qb7 Nh2 Nb4 Bb1 Bb6 Bg5 Bd8 Qf3 Ne8 Be3 Bb6 Bd2 Nf6 Ng4 Nxg4 hxg4 Rac8 Nf5 Bxf5 Qxf5 Bd4 a3 Na6 b4 axb4 axb4 Bb2 Rxc8 Rxc8 Qf3 Qb6 Rd1 Bd4 g3 Rc4 Bd3 Rc7 Kg2 Bc3 Be3 Qb8 Rh1 Qc8 Bxb5 Nxb4 Qd1 Bd4 Bxd4 exd4 g5 Qb8 Qh5 Qxb5 Qxh7+ Kf8 Qh8+ Ke7 Qxg7 Nxd5 Qxd4 Nc3 Qf6+ Kd7 g6 Nxe4 Qxf7+ Kc8 g7","Ruy Lopez"],["1960.??.??","Mar del Plata","Mar del Plata","5","Eliskases, Erich Gottlieb","","","1-0","C98","Ruy Lopez: Closed, Chigorin Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Nc6 dxc5 dxc5 Nf1 Rd8 Qe2 Nh5 a4 Rb8 axb5 axb5 g3 g6 h4 Be6 Ne3 c4 Ng5 Bxg5 hxg5 Na5 Ng4 Bxg4 Qxg4 Nb3 Bxb3 cxb3 Be3 Ra8 Rxa8 Rxa8 Rd1 Qc6 Rd5 f5 Qd1 f4 gxf4 exf4 Qxb3 Qc4 Qxc4 bxc4 Bd4 f3 Be3 h6 gxh6 Nf6 Rd6 Kf7 Rxf6+ Kxf6 Bd4+ Kg5 h7 Kf4 Kh2 g5 h8=Q Rxh8+ Bxh8 g4 e5","Ruy Lopez"],["1960.??.??","Mar del Plata","Mar del Plata","11","Incutto, Carlos","","","1-0","C99","Ruy Lopez: Closed, Chigorin Defense, Panov System","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2 cxd4 cxd4 Bb7 Nf1 Rac8 Bd3 Nd7 Ne3 exd4 Nxd4 Bf6 Ndf5 g6 Nh6+ Kh8 Neg4 Bg7 Bg5 Ne5 Nxe5 dxe5 a4 Nc4 Qe2 f6 Bc1 Na5 axb5 axb5 Be3 Nb3 Ra7 Nd4 Qg4 Ra8 Rxa8 Bxa8 Rc1 Qd6 Rc8 Qe7 Bxb5 Bxe4 Bc4 f5 Qg5 Bf6 Nf7+ Kg8 Nxe5+ Ne6 Nxg6 Bxg5 Nxe7+ Bxe7 Bh6 Rxc8 Bxe6+ Kh8 Bxc8 Bf6 b4 Bd4 b5 Bd3 Bd7 Kg8 Be8 Bc4 g3 Bd3 Be3 Bxe3 fxe3 Kf8 b6 Be4 Bd7 Ke7 Bxf5","Ruy Lopez"],["1960.??.??","Mar del Plata","Mar del Plata","13","Alvarez del Monte, Jose Luis","","","1-0","C85","Ruy Lopez: Closed, Delayed Exchange","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Bxc6 dxc6 Nc3 Bg4 h3 Bh5 Qe2 Nd7 Nd1 Nc5 d3 Ne6 Be3 Bf6 Nc3 Qe7 Nb1 g5 Nbd2 Rg8 g4 Bg6 Nc4 h5 Ncxe5 Nf4 Bxf4 gxf4 Nxg6 Rxg6 g5 O-O-O c3 Bxg5 Kh2 Qd6 d4 Re6 e5 Qe7 Qe4 Kb8 Qf5 Bh6 Rae1 c5 dxc5 Qxc5 Qxf7 Rde8 a3 Ka7 Qd7 Qe7 Qxe7 R8xe7 Rg1 Kb6 Nd4 f3 Nxe6 Rxe6 Kg3","Ruy Lopez"],["1960.??.??","USA-ch","New York","3","Kalme, G.","","","1/2-1/2","C92","Ruy Lopez: Closed, Karpov Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d6 h3 Nd7 a4 Nc5 Bd5 Bb7 axb5 axb5 Rxa8 Qxa8 d4 Nd7 Na3 b4 Nc4 exd4 cxd4 Nf6 Bg5 Qd8 Qa4 Qa8 Qxa8 Rxa8 Bxf6 Bxf6 e5 dxe5 Nfxe5 Nxe5 Bxb7 Nd3 Bxa8 Nxe1 Be4 b3 Nd2","Ruy Lopez"],["1960.??.??","USA-ch","New York","6","Seidman, Herbert","","","1-0","C89","Ruy Lopez: Marshall Attack, Steiner Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d5 exd5 e4 dxc6 exf3 Qxf3 Bg4 Qg3 Bd6 f4 g5 d4 Kh8 Re5 gxf4 Bxf4 Nh5 Rxh5 Bxh5 Nd2 Re8 Rf1 Re2 Bd1 Rxd2 Bxh5 f6 Re1 Bxf4 Qxf4 Rxb2 Re8+ Qxe8 Bxe8 Rxe8 h3 b4 cxb4 Rxb4 Qxf6+ Kg8 Qg5+ Kh8 Qf4 Ra4 Qf7 Rg8 Qxc7 Rxa2 Qe5+ Rg7 g4 h6 Qb8+ Rg8 c7","Ruy Lopez"],["1960.??.??","Reykjavik","Reykjavik","?","Johannsson, Ingi Randver","","","1-0","C75","Ruy Lopez: Morphy Defense, Modern Steinitz Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 d6 c3 Bd7 d4 Nf6 O-O Be7 d5 Nb8 Bc2 Bg4 c4 Nbd7 Re1 O-O Nbd2 c5 a4 Ne8 Nf1 Bxf3 Qxf3 Bg5 Ne3 g6 g3 Ng7 h4 Bxe3 Bxe3 f5 Bh6 f4 g4 Qxh4 g5 Qh5 Bd1 Qxf3 Bxf3 Rfb8 Bg4 Nf8 b4 cxb4 a5 Rc8 Bxc8 Rxc8 Reb1 Nd7 Rxb4 Nc5 Bxg7 Kxg7 Rb6 Rd8 f3 Rd7 Kf2 Kf8 Ke2 Kg7 Kd2 Kf8 Kc3 Ke8 Kb4 Nd3+ Ka3 Nc5 Rh1 Kf8 Rd1","Ruy Lopez"],["1961.??.??","Bled","Bled","6","Geller, Efim P","","","1-0","C72","Ruy Lopez: Morphy Defense, Modern Steinitz Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 d6 O-O Bg4 h3 Bh5 c3 Qf6 g4 Bg6 d4 Bxe4 Nbd2 Bg6 Bxc6+ bxc6 dxe5 dxe5 Nxe5 Bd6 Nxg6 Qxg6 Re1+ Kf8 Nc4 h5 Nxd6 cxd6 Bf4 d5 Qb3 hxg4 Qb7 gxh3+ Bg3 Rd8 Qb4+","Ruy Lopez"],["1961.??.??","Bled","Bled","8","Matanovic, Aleksandar","","","1/2-1/2","C97","Ruy Lopez: Closed, Chigorin, Yugoslav System","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Bd7 Nf1 Rfe8 Ne3 g6 Bd2 Bf8 b4 cxb4 cxb4 Nc4 Nxc4 bxc4 Rc1 exd4 Nxd4 d5 exd5 Rxe1+ Bxe1 Qd6 Ne2 Re8 Nc3 Qe5 Ba4 Bxa4 Qxa4 Bd6 g3 Qg5 Qc2 Bxb4 Bd2 Qh5 Qa4 Qxh3 Re1 Rxe1+ Bxe1 Bc5 Qxc4 Qxg3+ Kf1 Qh3+ Ke2 Qh5+ Kf1 Qh1+ Ke2 Qh5+ Kf1 Bf8 Qxa6 Nxd5 Nxd5 Qxd5 a4 f5 Bc3 f4 Qf6 Qh1+ Ke2 Qe4+ Kd2 f3 Qh8+ Kf7 Qf6+ Ke8 Qe5+ Qxe5 Bxe5 Bc5 Kd3 g5 Ke4 g4 Bg3 h5 a5 Kd7 Kd5 Ba7 Ke4 Kc8 Kf5 Bb8 Kg5","Ruy Lopez"],["1961.??.??","Bled","Bled","12","Trifunovic, Petar","","","1-0","C80","Ruy Lopez: Open","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Nxe4 d4 b5 Bb3 exd4 Re1 d5 Nc3 Be6 Nxe4 dxe4 Rxe4 Be7 Bxe6 fxe6 Nxd4 O-O Qg4 Nxd4 Rxd4 Qc8 Re4 Rf6 Be3 Qd7 Rd1 Qc6 Bd4 Rg6 Qe2 Rd8 g3 Qd5 Re1 c5 Bc3 Rd6 Be5 Rd8 Bf4 c4 Rxe6 Rxe6 Qxe6+ Qxe6 Rxe6 Bf6 Rxa6 Rd1+ Kg2 Bxb2 Rb6 Ra1 Rxb5 Rxa2 Rc5 Ra4 Be5 Bxe5 Rxe5 Ra2 Re2 Kf7 Kf3 Kf6 Ke4 g5 Kd4 Kf5 f3 c3 Rf2 Ra3 Kc4 h5 Kb4 Ra8 f4 Ke4 fxg5 Ke3 Rg2 Kd4 Re2 Rb8+ Ka4 Rg8 h4 Rf8 Re7 Rf3 Rd7+ Kc4 Rc7+ Kd4 Rd7+ Kc4 Rc7+ Kd4 Kb3 Rxg3 Rd7+ Ke4 Rh7 Kd4 Rxh5 Rg1 Rh8 Rb1+ Ka4 Ra1+ Kb5 Rb1+ Kc6 Rg1 Rd8+ Kc4 Re8 Kb4 Kd5 Rd1+ Ke6 Re1+ Kf7 Rf1+ Kg6 Rf2 h5 Rxc2 h6 Rh2 h7 c2 Rc8 Kb3 Kg7","Ruy Lopez"],["1962.??.??","Candidats Tournament","Curacao","3","Filip, Miroslav","","","1-0","C76","Ruy Lopez: Morphy Defense, Modern Steinitz Defense, Fianchetto Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 d6 c3 Bd7 d4 g6 O-O Bg7 d5 Nce7 Bxd7+ Qxd7 c4 h6 Nc3 f5 exf5 gxf5 Nh4 Nf6 f4 e4 Be3 O-O h3 c5 dxc6 bxc6 Qe2 Qe6 Rad1 Kh7 Kh2 Rg8 Rd2 Ne8 g3 a5 Rfd1 Ng6 Ng2 Rb8 Bd4 Rb7 g4 Re7 Bxg7 Rgxg7 Rd4 fxg4 Qxg4 Ne5 Qxe6 Nf3+ Kh1 Rxe6 f5 Re5 Rxe4 Rxf5 Rxe8 Rg3 Nf4 Rxf4 Ne2 Rxh3+ Kg2 Rfh4 Rxd6 Ne1+ Kf1 Rh1+ Kf2 R4h2+ Ke3 Rh3+ Ke4 Kg7","Ruy Lopez"],["1962.??.??","Candidats Tournament","Curacao","7","Keres, Paul","","","1-0","C96","Ruy Lopez: Closed, Keres Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Nd7 dxc5 dxc5 Nbd2 Qc7 Nf1 Nb6 Ne3 Rd8 Qe2 Be6 Nd5 Nxd5 exd5 Bxd5 Nxe5 Ra7 Bf4 Qb6 Rad1 g6 Ng4 Nc4 Bh6 Be6 Bb3 Qb8 Rxd8+ Bxd8 Bxc4 bxc4 Qxc4 Qd6 Qa4 Qe7 Nf6+ Kh8 Nd5 Qd7 Qe4 Qd6 Nf4 Re7 Bg5 Re8 Bxd8 Rxd8 Nxe6 Qxe6 Qxe6 fxe6 Rxe6 Rd1+ Kh2 Rd2 Rb6 Rxf2 Rb7 Rf6 Kg3","Ruy Lopez"],["1962.??.??","Candidats Tournament","Curacao","17","Filip, Miroslav","","","1-0","C98","Ruy Lopez: Closed, Chigorin Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Nc6 dxc5 dxc5 Nf1 Bd6 Nh4 Ne7 Qf3 Rd8 Ne3 Qb7 Ng4 Nxg4 hxg4 Ng6 Nf5 Be6 g5 Bc7 Be3 c4 Red1 Rxd1+ Rxd1 Rd8 g3 Rxd1+ Qxd1 Qc6 a4 Kf8 Qa1 Bc8 Qa3+ Kg8 axb5 axb5 Qa7 Bb7 Kh2 Qa6 Qc5 Qc6 Qb4 Bc8 Bc5 Bd8 Be3 Bc7 Kg1 Be6 Qa3 Bc8 Kh2 Be6 Qa1 Bc8 Qb1 Be6 Kg1 Bc8 b3 Be6 bxc4 Bxc4 Bd3 Bxd3 Qxd3 Kf8 Qb1 Qc4 Qd1 Qc6 Qb3 Kg8 Qb4 Qd7 Kh2 Qe8 Qc5 Qd7 Kg2 Bb8 Qb6 Bc7 Qc5 Bb8 Qb6 Bc7 Qb7 Nf8 Bb6 Bxb6 Qxb6 Ne6 Qb8+ Qd8 Qxb5 Nxg5 Qxe5 Ne6 Nd4 Nf8 c4 Ng6 Qd5 Qc8 Nf5","Ruy Lopez"],["1962.??.??","Candidats Tournament","Curacao","21","Keres, Paul","","","0-1","C96","Ruy Lopez: Closed, Keres Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Nd7 d5 Nb6 g4 h5 Nh2 hxg4 hxg4 Bg5 Nd2 g6 Ndf3 Bxc1 Qxc1 Kg7 Qg5 Nb7 Qxd8 Rxd8 a4 bxa4 Bxa4 Nxa4 Rxa4 Bd7 Ra2 c4 Nd2 Bb5 Nhf1 Rh8 Ne3 Rh4 Kg2 Rah8 Nf3 Rh3 Nf1 Nc5 Ng3 Bd7 g5 f6 gxf6+ Kxf6 Re3 Ke7 Nd2 Rh2+ Kg1 Bb5 Ra1 R2h4 Kg2 Rf8 Rf3 Rb8 Kg1 Ra8 Ra5 Rc8 Ra3 Ra8 Ra5 Ra7 Kg2 Nb7 Ra1 a5 Ngf1 Nc5 Ne3 a4 Rh3 Rxh3 Kxh3 Nd3 Ra2 Nxf2+ Kg3 Nd3 Nexc4 Ra8 Nb6 Ra6 Nbc4 Nc5 Kf3 Ra8 b4 Nb3 Na3 Bd7 Kg2 Bg4 Nac4 Rc8 Ne3 Bd7 c4 Rb8 b5 Nc5 Nd1 Kd8 Nc3 Ra8 Nf3 Kc7 Ng5 Kb6 Nf7 Rf8 Rf2 a3 Rf3 Bg4 Rf2 a2 Nxa2 Nxe4 Rf1 Bf5 c5+ dxc5","Ruy Lopez"],["1962.??.??","USA-ch","New York","11","Bisguier, Arthur Bernard","","","1-0","C67","Ruy Lopez: Berlin Defense, l'Hermet Variation, Berlin Wall Defense","e4 e5 Nf3 Nc6 Bb5 Nf6 O-O Nxe4 d4 Nd6 Bxc6 dxc6 dxe5 Nf5 Qxd8+ Kxd8 Nc3 Ke8 Ne2 Be6 Nf4 Bd5 Nxd5 cxd5 g4 Ne7 Bf4 c6 Rfe1 Ng6 Bg3 Bc5 c3 Nf8 b4 Bb6 Kg2 Ne6 Nh4 h5 h3 hxg4 hxg4 g6 Rh1 Bd8 Nf5 Rxh1 Nd6+ Kf8 Rxh1 b5 f4 Kg8 f5 Nf8 e6 f6 Nf7 Be7 Bf4 g5 Bd6 Re8 Bxe7 Rxe7 Nd8 Re8 Nxc6 Nxe6 fxe6 Rxe6 Nxa7","Ruy Lopez"],["1962.??.??","Stockholm Interzonal","Stockholm","13","German, Eugenio Maciel","","","1-0","C43","Petrov's Defense: Modern Attack, Bardeleben Variation","e4 e5 Nf3 Nf6 d4 exd4 e5 Ne4 Qe2 Nc5 Nxd4 Nc6 Nxc6 bxc6 Nc3 Rb8 f4 Be7 Qf2 d5 Be3 Nd7 O-O-O O-O g4 Bb4 Ne2 Nb6 Nd4 Qe8 c3 Be7 f5 c5 Nb5 d4 Bf4 dxc3 Nxc3 Na4 Bb5 Rxb5 Nxa4 Rb4 Nc3 Bb7 Rhe1 Kh8 f6 Bd8 Bg5 Rd4 fxg7+ Kxg7 Bf6+ Kg8 Qh4 Rxd1+ Nxd1","Petrov's Defense"],["1962.??.??","Stockholm Interzonal","Stockholm","19","Kortschnoj, Viktor","","","1-0","C91","Ruy Lopez: Closed, Bogoljubow Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d6 d4 Bg4 Be3 exd4 cxd4 Na5 Bc2 Nc4 Bc1 c5 b3 Na5 d5 Nd7 Nbd2 Bf6 Rb1 c4 h3 Bxf3 Nxf3 cxb3 axb3 Qc7 Be3 Bc3 Re2 b4 Nd4 Rfe8 Nf5 Nb7 Bd4 g6 Nh6+ Kf8 Rc1 Rac8 Bd3 Qa5 Rec2 Ne5 Bf1 Nc5 Bxc3 bxc3 Rxc3 Kg7 Ng4 Nxg4 Qxg4 Rb8 Rf3 Nxe4 Qf4 f5 Re3 Re5 Rc6 Rbe8 Rxd6 Qa1 Rxa6 Qd4 Rd3 Qb2 d6 g5 Qe3 f4 Qa7+","Ruy Lopez"],["1962.??.??","Varna olm","Varna","6","Ciocaltea, Victor","","","1-0","C75","Ruy Lopez: Morphy Defense, Modern Steinitz Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 d6 c3 Bd7 d4 Nge7 Bb3 h6 Qe2 Ng6 Qc4 Qf6 d5 b5 Qe2 Na5 Bd1 Be7 g3 O-O h4 Rfc8 Bg5 hxg5 hxg5 Qxg5 Nxg5 Bxg5 Na3 c6 dxc6 Be6 Qh5 Bh6 Bg4 Bxg4 Qxg4 Nxc6 Rd1 b4 Nc4 bxc3 bxc3 Nd4 Nb6","Ruy Lopez"],["1963.??.??","Bay City","Bay City","?","Fuller, John A","","","1-0","C67","Ruy Lopez: Berlin Defense, l'Hermet Variation","e4 e5 Nf3 Nc6 Bb5 Nf6 O-O Nxe4 d4 Nd6 Bg5 Be7 Bxe7 Qxe7 Bxc6 dxc6 dxe5 Nf5 Nc3 Be6 Qd2 Rd8 Qf4 O-O Ne4 h6 h4 Nd4 Nxd4 Rxd4 Nf6+ Qxf6 Qxd4 Rd8 Qe4 Bd5 Qxd5","Ruy Lopez"],["1963.??.??","New York","New York","?","Fine, Reuben","","","1-0","C52","Italian Game: Evans Gambit, Compromised Defense","e4 e5 Nf3 Nc6 Bc4 Bc5 b4 Bxb4 c3 Ba5 d4 exd4 O-O dxc3 Qb3 Qe7 Nxc3 Nf6 Nd5 Nxd5 exd5 Ne5 Nxe5 Qxe5 Bb2 Qg5 h4 Qxh4 Bxg7 Rg8 Rfe1+ Kd8 Qg3","Italian Game"],["1963.??.??","Manhattan blitz","New York","?","Fine, Reuben","","","1-0","C41","Philidor Defense: Hanham Variation, Steiner Variation","e4 e5 Nf3 d6 d4 Nd7 Bc4 c6 O-O Be7 dxe5 dxe5 Qe2 Ngf6 Rd1 Qc7 Ng5 O-O Bxf7+",""],["1963.??.??","USA-ch","New York","2","Evans, Larry Melvyn","","","1-0","C33","King's Gambit Accepted: Bishop's Gambit, Cozio Variation","e4 e5 f4 exf4 Bc4 Qh4+ Kf1 d6 Nc3 Be6 Qe2 c6 Nf3 Qe7 d4 Bxc4 Qxc4 g5 e5 d5 Qd3 Na6 Ne2 Nb4 Qd1 O-O-O c3 Na6 h4 g4 Nh2 h5 Nxf4 Qxh4 Kg1 Nh6 Nf1 Qe7 Nxh5 Rg8 Nfg3 Rg6 Nf4 Rg5 Be3 Nc7 Qd2 Rg8 Nfe2 f6 exf6 Qxf6 Bxh6 Bd6 Rf1 Qe6 Bf4 Rde8 Rh6 Bxf4 Qxf4 Qe7 Rf6 Ne6 Qe5 Ng5 Qxe7 Rxe7 Rf8+ Rxf8 Rxf8+","King's Gambit Accepted"],["1963.??.??","USA-ch","New York","4","Bisguier, Arthur Bernard","","","1-0","C98","Ruy Lopez: Closed, Chigorin Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d6 h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Nc6 dxc5 dxc5 Nf1 Rd8 Qe2 Nh5 g3 g6 h4 Be6 Ne3 f6 Nd5 Qb7 Nxe7+ Qxe7 Nh2 Ng7 Ng4 c4 Qf3 Bxg4 Qxg4 Ne6 h5 Kh8 Kg2 g5 Be3 Nf4+ Kh2 Nd3 Bxd3 cxd3 Red1 Rd7 Rd2 Na5 b3 Qd6 Rad1 Re8 Rxd3 Qxd3 Qxd7","Ruy Lopez"],["1963.??.??","USA-ch","New York","8","Weinstein, Raymond Allen","","","1-0","C96","Ruy Lopez: Closed, Chigorin Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 cxd4 cxd4 Bb7 d5 Bc8 Nbd2 g6 b4 Nb7 a4 Bd7 axb5 axb5 Rxa8 Qxa8 Re3 Qc8 Ra3 Qc7 Nb3 Nh5 Bd3 Rc8 Qf1 Nf6 Bg5 Rb8 Ra7 Qd8 Qa1 Qe8 Qa6 Qc8 Nxe5 dxe5 Bxf6 Bxf6 Qxf6 Qc3 Nc5 Nxc5 bxc5 Be8 Bf1 Qxc5 Re7 b4 d6 Qb6 Bc4","Ruy Lopez"],["1963.??.??","Poughskeepie","Poughskeepie","?","Bisguier, Arthur Bernard","","","1-0","C59","Italian Game: Two Knights Defense, Steinitz Variation","e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Na5 Bb5+ c6 dxc6 bxc6 Be2 h6 Nh3 Bc5 O-O O-O d3 Bxh3 gxh3 Qd7 Bf3 Qxh3 Nd2 Rad8 Bg2 Qf5 Qe1 Rfe8 Ne4 Bb6 Nxf6+ Qxf6 Kh1 c5 Qc3 Nc6 f4 Nd4 Qc4 Qg6 c3 Nf5 fxe5 Rxe5 Bf4 Re2 Be4 Rxb2 Be5 Re8 Rxf5 Rxe5 Rxe5","Italian Game"],["1963.??.??","Poughskeepie","Poughskeepie","?","Radojcic, Miroslav","","","1-0","C59","Italian Game: Two Knights Defense, Steinitz Variation","e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Na5 Bb5+ c6 dxc6 bxc6 Be2 h6 Nh3 Bc5 d3 O-O Nc3 Re8 O-O Bxh3 gxh3 Qd7 Bg4 Nxg4 hxg4","Italian Game"],["1964.??.??","Chicago sim","Chicago","?","Mott Smith, KO.","","","1-0","C34","King's Gambit Accepted: Fischer Defense","e4 e5 f4 exf4 Nf3 d6 d4 g5 Bc4 h6 O-O Bg7 c3 Ne7 g3 Ng6 Qb3 O-O gxf4 gxf4 Kh1 Nc6 Qc2 Nce7 Nbd2 Be6 Rg1 Bxc4 Nxc4 d5 Nce5 dxe4 Qxe4 Qd5 Qxd5 Nxd5 Nxg6 fxg6 Rxg6 Kh7 Rg2 Rae8 Bd2 Ne3 Re2 Nc4 Rae1 Rxe2 Rxe2 Nxd2 Nxd2 Rf6 Nf3 Bf8 Re8 a5 b3 Bd6 c4 b6 Kg2 Kg6 Kf2 Kf5 h3 Rf8 Nh4+ Kg5 Rxf8 Bxf8 Ng2 Bg7 d5 Be5 Kf3 Kf5 Ne1 Bc3 Nd3 Be5 a3 Bd6 b4 axb4 axb4 Be7 c5 bxc5 bxc5 Bg5 Nb4 Be7 Na6 Ke5 d6 cxd6 c6 Bd8 c7 Bxc7 Nxc7 d5 Na6 Kf5 Nb4 d4 Nd3 Kg5 Nxf4 Kh4 Kg2 h5 Kh2","King's Gambit Accepted"],["1964.??.??","Chicago sim","Chicago","?","Sandrin, Albert","","","1-0","C33","King's Gambit Accepted: Bishop's Gambit, Bogoljubow Variation","e4 e5 f4 exf4 Bc4 Nf6 Nc3 Bb4 Nf3 Qe7 Qe2 O-O e5 Bxc3 dxc3 Nh5 O-O Re8 Qe4 c6 Qd4 b5 Bd3 g6 Bxf4 c5 Qe3 Nc6 Bxb5 Bb7 Rae1 d5 exd6 Qf6 Qxe8+ Rxe8 Rxe8+ Kg7 Bxc6 Nxf4 d7 Ne2+ Rxe2 Bxc6 Ne5","King's Gambit Accepted"],["1964.??.??","Cicero sim","Cicero","?","Nyman, Sture","","","1-0","C33","King's Gambit Accepted: Bishop's Gambit, Bledow Countergambit","e4 e5 f4 exf4 Bc4 d5 Bxd5 Nf6 Nc3 Bb4 Nf3 O-O O-O Bxc3 dxc3 c6 Bc4 Qb6+ Kh1 Nxe4 Qe1 Re8 Bxf4 Nd6 Bxd6 Rxe1 Raxe1 Bd7 Ng5 Na6 Rxf7","King's Gambit Accepted"],["1964.??.??","Cicero sim","Cicero","?","Kumro, T.","","","1-0","C29","Vienna Game: Vienna Gambit","e4 e5 Nc3 Nf6 f4 d6 Nf3 Nc6 Bb5 Bd7 d3 Be7 Bxc6 Bxc6 fxe5 dxe5 Nxe5 O-O Nxc6 bxc6 O-O Qd7 Qf3 Ng4 h3 Ne5 Qg3 Bd6 Bf4 f6 d4 Ng6 Bxd6 cxd6 Rad1 Qe6 d5 cxd5 Rxd5 Rfd8 Rfd1 Ne5 Nb5 Rab8 Nxd6 Rf8 Nf5 Ng6 Rd7 Qb6+ Kh1 Rbd8 Rxg7+ Kh8 Rf1 Qxb2 Qg4 Rg8 Rxh7+","Vienna Game"],["1964.??.??","Cicero sim","Cicero","?","Goranson, W.","","","1-0","C26","Vienna Game: Stanley Variation","e4 e5 Nc3 Nf6 Bc4 Bc5 f4 d6 Nf3 Bg4 h3 Bh5 g4 Nxg4 hxg4 Bxg4 Na4 Nc6 c3 Qf6 f5 g6 Nxc5 dxc5 Rf1 gxf5 Qe2 Bxf3 Qxf3 Qh4+ Kd1 f4 d3 O-O-O Kc2 Rhg8 Rh1 Qg3 Qxg3 Rxg3 Rxh7 f6 Bd2 Na5 Be6+ Kb8 Rd7 Rxd7 Bxd7 c4 d4 c6 Rh1 Rg7 Bf5 Kc7 Rh6 Rf7 Be1 Rg7 Rxf6 Rg2+ Bd2 exd4 cxd4 Nb3 axb3 cxb3+ Kc3","Vienna Game"],["1964.??.??","Cicero sim","Cicero","?","Fajkus, J.","","","1-0","C25","Vienna Game","e4 e5 Nc3 c6 d4 Qc7 dxe5 Qxe5 Nf3 Qc7 Bd3 d6 O-O Be6 Nd4 Qc8 f4 d5 f5 Bd7 e5 Bc5 Be3 Bxd4 Bxd4 c5 Qg4 g6 e6 cxd4 exf7+ Kf8 Qxd4 Bxf5 Qxh8 Qc5+ Kh1 Kxf7 Bxf5","Vienna Game"],["1964.??.??","Cicero sim","Cicero","?","Puto, E.","","","0-1","C25","Vienna Game: Max Lange Defense","e4 e5 Nc3 Nc6 Bc4 Bc5 f4 Nf6 Nf3 d6 d3 O-O f5 Nd4 Bg5 c6 a3 h6 Bh4 b5 Ba2 a5 g4 g5 fxg6 Bxg4 Bxf7+ Kg7 Nxd4 Bxd4 Ne2 Bxb2 Rb1 Bc3+ Kf2 Nxe4+ dxe4 Qxh4+ Kg2 Qh3+ Kg1 Qe3+","Vienna Game"],["1964.??.??","Cicero sim","Cicero","?","Sandrin, Albert","","","1-0","C41","Philidor Defense: Hanham Variation, Steiner Variation","e4 e5 Nf3 d6 d4 Nd7 Bc4 c6 O-O Be7 dxe5 dxe5 Qe2 Ngf6 Rd1 Qc7 Ng5 Rf8 a4 h6 Nf3 Nc5 Nc3 Bg4 h3 Bh5 g4 Bg6 Nh4 Bh7 Nf5 Rg8 Qf3 Ne6 Be3 a6 a5 c5 Nd5 Nxd5 Bxd5 O-O-O Bxe6+ fxe6 Nxe7+ Qxe7 Qg3 Qc7 f3 Rgf8 Kg2 Rxd1 Rxd1 Rf7 Bg1 Rd7 Rxd7 Kxd7 Qe1 b5 axb6 Qxb6 Qc3 Qb4 Qxe5 Qd2+ Bf2 Qxc2 Qxg7+ Kc6 Qxh7 Qxb2 Qxh6 Qb3 g5",""],["1964.??.??","Davis sim","Davis","?","Shifrine, M.","","","1-0","C28","Vienna Game: Stanley Variation, Three Knights Variation","e4 e5 Nc3 Nc6 Bc4 Nf6 f4 Bc5 Nf3 d6 d3 Bg4 h3 Bxf3 Qxf3 Qe7 Bb5 a6 Bxc6+ bxc6 Ne2 Nd7 f5 h6 Bd2 a5 a4 Nf6 g4 d5 Ng3 dxe4 dxe4 Nd7 h4 f6 g5 O-O-O gxh6 gxh6 O-O-O Bb4 Be3 Nb6 Bxb6 cxb6 Nh5 Rhg8 Rhg1 Rxd1+ Rxd1 Bc5 Qd3 Bd4 c3 Bc5 Qa6+ Kb8 Nxf6 Be3+ Kb1 Rd8 Rxd8+ Qxd8 Qe2 Bc5 Nh5 Qxh4 f6 Qh3 f7 Qc8 Nf6","Vienna Game"],["1964.??.??","Davis sim","Davis","?","Osbun, E.","","","1-0","C52","Italian Game: Evans Gambit, Waller Attack","e4 e5 Nf3 Nc6 Bc4 Bc5 b4 Bxb4 c3 Ba5 d4 exd4 O-O d6 Qb3 Qd7 cxd4 Bb6 Bb5 Kf8 d5 Na5 Qa4 c6 dxc6 bxc6 Bd3 Nb7 Nc3 Nc5 Qc2 Ne7 Ba3 Ng6 Rfd1 Nf4 Bf1 Kg8 Ne5 Qc7 Nc4 Be6 Nxd6 Rd8 e5 f6 Bxc5 Bxc5 Nce4 Bxd6 exd6 Qc8 Nc5 Bd5 d7 Qc7 g3 Ne6 Nxe6 Bxe6 Bc4 Kf7 Bxe6+ Kxe6 Re1+ Kf7 Qc4+ Kg6 Re7 Rhg8 Rae1 h5 Qf7+ Kh6 R1e6 Rdf8 Rxf6+ gxf6 Qh7+ Kg5 h4+ Kg4 Re4+ Kh3 Qf5+ Rg4 Rxg4 hxg4 Qd3","Italian Game"],["1964.??.??","Davis sim","Davis","?","Celle, O.","","","1-0","C51","Italian Game: Evans Gambit, Anderssen Variation","e4 e5 Nf3 Nc6 Bc4 Bc5 b4 Bxb4 c3 Be7 d4 d6 dxe5 Nxe5 Nxe5 dxe5 Qh5 g6 Qxe5 Nf6 Ba3 Rf8 O-O Ng4 Qg3 Bxa3 Nxa3 Qe7 Bb5+ c6 Nc4 Qe6 Rad1 cxb5 Qc7 Bd7 Nd6+ Ke7 Nf5+ gxf5 exf5 Rac8 Rxd7+ Qxd7 f6+ Nxf6 Re1+ Ne4 Rxe4+ Kf6 Qxd7 Rfd8 Qg4","Italian Game"],["1964.??.??","Davis sim","Davis","?","Janushkovsky, A.","","","1-0","C52","Italian Game: Evans Gambit, Waller Attack","e4 e5 Nf3 Nc6 Bc4 Bc5 b4 Bxb4 c3 Ba5 d4 exd4 O-O d6 Qb3 Qe7 e5 dxe5 Ba3 Qf6 cxd4 e4 Ne5 Nh6 Nxc6 bxc6 Qa4 Bb6 Nc3 Bd7 Nxe4 Qf4 Nc5 Bxc5 Bxc5 Nf5 Rfe1+ Kd8 Bxf7 Nd6 Be6 Re8 g3 Qf6 Bxd7 Kxd7 d5 Nb5 Red1 Kc8 Qa6+ Kd8 dxc6+ Nd6 Bxd6 cxd6 Qb7","Italian Game"],["1964.??.??","Montreal sim","Montreal","?","NN","","","1-0","C57","Italian Game: Two Knights Defense, Fritz Variation","e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Nd4 c3 b5 Bf1 Nxd5 cxd4 Qxg5 Bxb5+ Kd8 Qf3 e4 Qxe4 Bd6 O-O Bb7 d3 Nf4 Bxf4 Qxb5 d5 Qxb2 Bxd6 cxd6 Re1 Qf6 Nc3 Rc8 Qb4 Re8 Qa5+ Kd7 Qa4+","Italian Game"],["1964.??.??","New York sim","New York","?","McDermott, M.","","","1-0","C26","Vienna Game: Stanley Variation","e4 e5 Bc4 Nf6 Nc3 Bc5 f4 d6 Nf3 Bg4 h3 Bxf3 Qxf3 Nc6 d3 Nd4 Qg3 Nxc2+ Kd1 Nxa1 Qxg7 Rf8 fxe5 dxe5 Rf1 Be7 Bg5 Nxe4 Nxe4 f5 Qxh7 Bxg5 Qg6+","Vienna Game"],["1964.??.??","New York sim","New York","?","Terrone, J.","","","1-0","C87","Ruy Lopez: Closed, Averbakh Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 d6 Bxc6+ bxc6 d4 Nd7 Nbd2 Bf6 Nc4 Nb6 Na5 Bd7 b3 O-O dxe5 dxe5 Ba3 Re8 c4 Be7 c5 Nc8 Nb7","Ruy Lopez"],["1965.??.??","Capablanca mem","Havana","2","Smyslov, Vassily","","","1-0","C77","Ruy Lopez: Morphy Defense, Anderssen Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 d3 d6 c3 Be7 Nbd2 O-O Nf1 b5 Bb3 d5 Qe2 dxe4 dxe4 Be6 Bxe6 fxe6 Ng3 Qd7 O-O Rad8 a4 Qd3 Qxd3 Rxd3 axb5 axb5 Ra6 Rd6 Kh1 Nd7 Be3 Rd8 h3 h6 Rfa1 Ndb8 Ra8 Rd1+ Kh2 Rxa1 Rxa1 Nd7 b4 Kf7 Nf1 Bd6 g3 Nf6 N1d2 Ke7 Ra6 Nb8 Ra5 c6 Kg2 Nbd7 Kf1 Rc8 Ne1 Ne8 Nd3 Nc7 c4 bxc4 Nxc4 Nb5 Ra6 Kf6 Bc1 Bb8 Bb2 c5 Nb6 Nxb6 Rxb6 c4 Nc5 c3","Ruy Lopez"],["1965.??.??","Capablanca mem","Havana","4","O'Kelly de Galway, Alberic","","","1/2-1/2","C89","Ruy Lopez: Marshall Attack, Modern Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d5 exd5 Nxd5 Nxe5 Nxe5 Rxe5 c6 g3 Bf6 Re1 Ra7 d4 Re7 Rxe7 Qxe7 Bxd5 cxd5 Be3 Re8 Nd2 Bh3 Qf3 Qe6 Re1 Bg4 Qg2 Bh3 Qf3 Bg4 Qh1 h5 h4 Qf5 Qg2 Qd3 Nf1 Qc4 a3 Qa2 f3 Bf5 Qd2 Re6 Bf2 Rxe1 Bxe1 Qb1 Ne3 Be6 Ng2 Be7 Nf4 g6 Kg2 Bd6 Nxe6 fxe6 Bf2 Kf7 Be3 Ke8 Bh6 Kd7 Bg7 Qf5 Bh8 Qf8 Be5 Bxe5 dxe5 Qf5 Qe3 Kc6 b4 Kb7 Kh2 Ka8 Qe2 Kb7 Kg2 Kb8 g4 Qf4 Qf2 Kb7 Qd4 Qc1 Qd3 Qe1 gxh5 gxh5 f4","Ruy Lopez"],["1965.??.??","Capablanca mem","Havana","6","Wade, Robert Graham","","","1/2-1/2","C89","Ruy Lopez: Marshall Attack, Modern Main Line","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d5 exd5 Nxd5 Nxe5 Nxe5 Rxe5 c6 d4 Bd6 Re1 Qh4 g3 Qh3 Be3 h5 Qf3 h4 Bxd5 cxd5 Nd2 Be6 Bf4 Bg4 Qg2 Qxg2+ Kxg2 h3+ Kg1 Bxf4 gxf4 Rfd8 f3 Be6 Nb3 Rab8 a3 Rb6 Kf2 g6 Re5 Kg7 Rae1 Kf6 Na5 Rh8 b4 Rc8 R5e3 Rg8 Nb3 Ra8 Ra1 g5 fxg5+ Kxg5 Rg1+ Kf6 Ree1 Rc6 Rc1 Bf5 Rge1 Rg8 Rg1 Ra8 Nc5 a5 Ra1 Rcc8 Ra2 Rg8 Rg3 axb4 cxb4 Rh8 Rg1 Rhg8 Rxg8 Rxg8 Ke3 Re8+ Kf4 Rg8 Re2 Rg2 Ke3 Rg1 a4 bxa4 Nxa4 Rd1 Rb2 Rd3+ Kf2 Rxd4 Nc3 Rd3 Ne2 d4 b5 Bc8 Nc1 Rd1 Nb3 Rh1 Kg3 Rg1+ Kf4 Rg2 Rd2 Bb7 b6 Ba8 Rxd4 Rxh2 Rd6+ Ke7 Rh6 Rb2 Nd4 h2 Kg3","Ruy Lopez"],["1965.??.??","Capablanca mem","Havana","8","Szabo, Laszlo","","","1-0","C92","Ruy Lopez: Closed, Kholmov Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d6 h3 Be6 d4 Bxb3 axb3 exd4 cxd4 Nb4 d5 Nd7 Na3 Bf6 Nc2 c5 Nxb4 cxb4 Nd4 Bxd4 Qxd4 a5 Bf4 Nc5 Re3 f6 Rae1 Qc7 Bg3 Nd7 Kh2 Rfd8 R3e2 Nc5 Re3 Nd7 Qd3 Rab8 Qe2 Rb7 Kh1 Nc5 f4 Rf8 e5 f5 Bh4 dxe5 fxe5 f4 Rf3 Qd7 Qd2 Qf5 e6 Ne4 Qd4","Ruy Lopez"],["1965.??.??","Capablanca mem","Havana","10","Ivkov, Borislav","","","0-1","C96","Ruy Lopez: Closed, Keres Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d6 h3 Na5 Bc2 c5 d4 Nd7 dxc5 dxc5 Nbd2 f6 Nh4 Nb6 Nf5 Rf7 Nxe7+ Rxe7 Qf3 Be6 Nf1 Rd7 Ne3 c4 Nf5 Na4 Bxa4 bxa4 Be3 Rd3 Qg4 Qd7 Bc5 Rc8 Be7 Bxf5 Qxf5 Nc6 Bc5 Nd8 Qxd7 Rxd7 Rad1 Rd3 Ba3 Nc6 Rxd3 cxd3 Rd1 Rd8 Kf1 g6 g4 f5 gxf5 gxf5 exf5 e4 Ke1 Ne5 Bc5 Nf3+ Kf1 Kf7 Kg2 Rg8+ Kh1 Rg1+ Rxg1 Nxg1 Be3 Nf3 Kg2 d2 Bxd2 Nxd2 Kg3 Kf6 Kf4 h5 Ke3 Nf3 Kxe4 Ng5+ Kf4 Nxh3+ Kg3 Ng5 Kh4 Kxf5 Kxh5 Ne4","Ruy Lopez"],["1965.??.??","Capablanca mem","Havana","16","Donner, Jan Hein","","","1-0","C89","Ruy Lopez: Marshall Attack, Modern Main Line","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d5 exd5 Nxd5 Nxe5 Nxe5 Rxe5 c6 d4 Bd6 Re1 Qh4 g3 Qh3 Be3 Bg4 Qd3 Nxe3 Rxe3 c5 Bd5 Rad8 Nd2 Bb8 Bg2 Qh6 d5 c4 Qd4 Bf5 b3 Rc8 bxc4 Bd6 Qb6 Bf4 Qxh6 Bxh6 f4 g5 Re5 Bd3 c5 Rxc5 d6 Rxc3 d7 gxf4 Rae1 Bg7 Re8 Bd4+ Kh1 Bf6 gxf4","Ruy Lopez"],["1965.??.??","Capablanca mem","Havana","18","Kholmov, Ratmir D","","","0-1","C98","Ruy Lopez: Closed, Chigorin Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d6 h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Nc6 dxc5 dxc5 Nf1 Be6 Ne3 Rad8 Qe2 c4 Ng5 h6 Nxe6 fxe6 b4 Nd4 cxd4 exd4 a3 d3 Bxd3 Rxd3 Ng4 Kh7 e5 Nxg4 Qe4+ g6 Qxg4 Rf5 Qe4 Qd7 Be3 Qd5 Qxd5 Rxd5 f4 g5 g3 gxf4 gxf4 Rf8 Kg2 Kg6 Rg1 Rd3 Kf3+ Kf5 Rg7 Bd8 Rb7 Rg8 Rb8 Rg7 a4 h5 axb5 axb5 Rxb5 Bh4 Ke2 Rg2+ Kf1 Rh2 Kg1 Re2 Bb6 c3 Kf1 Rh2","Ruy Lopez"],["1965.??.??","USA-ch","New York","4","Benko, Pal C","","","1-0","C95","Ruy Lopez: Closed, Breyer Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Nb8 d4 Nbd7 Nh4 Nb6 Nd2 c5 dxc5 dxc5 Nf5 Bxf5 exf5 Qc7 g4 h6 h4 c4 Bc2 Nh7 Nf3 f6 Nd2 Rad8 Qf3 h5 gxh5 Nd5 Ne4 Nf4 Bxf4 exf4 Kh1 Kh8 Rg1 Rf7 Rg6 Bd6 Rag1 Bf8 h6 Qe5 Qg4 Rdd7 f3 Bc5 Nxc5 Qxc5 Rxg7 Rxg7 hxg7+ Kg8 Qg6 Rd8 Be4 Qc8 Qe8+","Ruy Lopez"],["1966.??.??","La Habana olm fin-A","La Habana","2","Spassky, Boris V","","","1/2-1/2","C93","Ruy Lopez: Closed, Smyslov Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d6 h3 h6 d4 Re8 Nbd2 Bf8 Nf1 Bd7 Ng3 Na5 Bc2 c5 b3 cxd4 cxd4 Nc6 Bb2 g6 Qd2 Bg7 Rad1 Qb6 Nf1 Rad8 Ne3 Qb8 Bb1 Qb7 Rc1 Kh7 a3 Bc8 Bc3 Bd7 Qb2 Qb8 b4 Kg8 Rcd1 Nh7 Ba2 Ng5 Nxg5 hxg5 dxe5 dxe5 Nd5 Ne7 Nxe7+ Rxe7 Qd2 Bf6 Qd6 Kg7 Qxa6 Rc8 Rd6 Rxc3 Rxf6 Be6 Rxe6 fxe6 Rd1 Qb7 Qxb7 Rxb7 Bxe6 Rxa3 Kh2 Ra4 Rb1 Rc7 f3 Ra6 Bb3 Ra3 Rb2 Ra1 Kg3 Kf6 Kg4 Rc3 Bd5 Raa3 h4 gxh4 Kxh4 Ra1 Rd2 Raa3 Kg4 Rd3 Re2 Rac3 Ra2 Ra3 Rb2","Ruy Lopez"],["1966.??.??","La Habana olm fin-A","La Habana","4","Olafsson, Fridrik","","","1-0","C83","Ruy Lopez: Open, Classical Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Nxe4 d4 b5 Bb3 d5 dxe5 Be6 c3 Be7 Bc2 Bg4 h3 Bh5 g4 Bg6 Bb3 Na5 Bxd5 c6 Bxe4 Bxe4 Qxd8+ Rxd8 Nbd2 Bd5 Re1 h5 Ne4 hxg4 hxg4 Nc4 Kg2 Be6 b3 Nb6 Be3 Nd5 Kg3 f6 Bc5 f5 Nd6+ Bxd6 exd6 Kd7 Ne5+ Kc8 Nxc6 f4+ Kg2 Ne3+ Kg1 Bd5 Ne7+ Kd7 fxe3 Rh1+ Kf2 Rh2+ Kf1 Bf3 Ng6 Be4 Ne5+","Ruy Lopez"],["1966.??.??","La Habana olm fin-A","La Habana","6","Portisch, Lajos","","","1-0","C69","Ruy Lopez: Exchange Variation, Gligoric Variation","e4 e5 Nf3 Nc6 Bb5 a6 Bxc6 dxc6 O-O f6 d4 exd4 Nxd4 c5 Nb3 Qxd1 Rxd1 Bd6 Na5 b5 c4 Ne7 Be3 f5 Nc3 f4 e5 Bxe5 Bxc5 Bxc3 bxc3 Ng6 Nc6 Be6 cxb5 axb5 Na7 Rb8 Rdb1 Kf7 Nxb5 Rhd8 Rb4 Bxa2 Nxc7 Rbc8 h4 Rd2 Bb6 f3 Be3 Re2 Nb5 Ra8 h5 Ne5 Rf4+ Ke7 Rd1 Rc8 Re4 Kf6 Rd6+ Kf5 Rf4+ Kg5 Rxf3+","Ruy Lopez"],["1966.??.??","La Habana olm prel","La Habana","7","Johannessen, Svein","","","1-0","C70","Ruy Lopez: Morphy Defense, Norwegian Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 b5 Bb3 Na5 O-O d6 d4 Nxb3 axb3 f6 c4 Bb7 Nc3 Ne7 Qe2 c6 Rd1 Qc7 Be3 Ng6 Rac1 b4 Na4 c5 dxc5 dxc5 Qd3 Rb8 Nb6 Be7 Nd5 Qc6 Qe2 Bd6 Rd3 Rc8 Rcd1 Bb8 Nd2 Qe6 Nf1 O-O Ng3 Nf4 Bxf4 exf4 Nh5 Rce8 Nhxf4 Bxf4 Nxf4 Qxe4 Re3 Qc6 Re6 Qc8 h4 g6 Re7 Rxe7 Qxe7 Rf7 Rd8+ Kg7 Ne6+","Ruy Lopez"],["1966.??.??","La Habana olm fin-A","La Habana","8","Gligoric, Svetozar","","","1-0","C69","Ruy Lopez: Exchange Variation, Gligoric Variation","e4 e5 Nf3 Nc6 Bb5 a6 Bxc6 dxc6 O-O f6 d4 Bg4 c3 exd4 cxd4 Qd7 h3 Be6 Nc3 O-O-O Bf4 Ne7 Rc1 Ng6 Bg3 Bd6 Na4 Bxg3 fxg3 Kb8 Nc5 Qd6 Qa4 Ka7 Nxa6 Bxh3 e5 Nxe5 dxe5 fxe5 Nc5+ Kb8 gxh3 e4 Nxe4 Qe7 Rc3 b5 Qc2","Ruy Lopez"],["1966.??.??","La Habana olm fin-A","La Habana","13","Jimenez Zerquera, Eleazar","","","1-0","C69","Ruy Lopez: Exchange Variation, Gligoric Variation","e4 e5 Nf3 Nc6 Bb5 a6 Bxc6 dxc6 O-O f6 d4 Bg4 c3 exd4 cxd4 Qd7 h3 Bh5 Ne5 Bxd1 Nxd7 Kxd7 Rxd1 Re8 f3 Ne7 Nc3 Kc8 Be3 f5 Rac1 fxe4 fxe4 g6 Bf4 Bg7 d5 Rd8 Na4 Rhf8 g3 g5 Bxg5 Rf7 Kg2 cxd5 exd5 Kb8 Re1 Bf8 Rf1 Rg7 Bf6 Rg8 Rce1 Re8 d6 cxd6 Bxe7 Bxe7 Rf7","Ruy Lopez"],["1966.??.??","USA-ch","New York","8","Addison, William","","","1/2-1/2","C80","Ruy Lopez: Open","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Nxe4 d4 b5 Bb3 d5 Nxe5 Nxe5 dxe5 c6 Be3 Be7 Nd2 Nxd2 Qxd2 O-O Qc3 Bb7 f4 a5 a3 b4 Qd2 a4 Ba2 bxa3 bxa3 Bxa3 Rfb1 Bc8 Bxd5 Qxd5 Rxa3 Qxd2 Bxd2 Bf5 Rb2 Rfd8 Be3 h5 h3 Rdb8 Rxb8+ Rxb8 Rxa4 Bxc2 Rc4 Rb1+ Kf2 Rb2 Kg3 Bf5 Rxc6 Rxg2+","Ruy Lopez"],["1966.??.??","Santa Monica","Santa Monica","2","Portisch, Lajos","","","1/2-1/2","C95","Ruy Lopez: Closed, Breyer Defense, Zaitsev Hybrid","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Nb8 d4 Nbd7 c4 c6 c5 Qc7 cxd6 Bxd6 Bg5 exd4 Bxf6 gxf6 Qxd4 Ne5 Nbd2 Rd8 Qe3 Nd3 Qh6 Bf4 Qxf6 Rd6 Qc3 Nxe1 Rxe1 Qd8 Re2 Rg6 Kh1 Be6 Bxe6 fxe6 g3 Bh6 Kg2 Rc8 e5 Qd5 Ne4 Bg7 b3 Rf8 Qc2 Rf4 Ned2 c5 Re3 Qc6 Ne4 c4 bxc4 bxc4 Ned2 Bh6 Rc3 Rg7 Rd3 Qa8 Nxc4 Qc6 Na3 Qxc2 Nxc2 Ra4 Rd8+ Kf7 a3 Rg6 h4 Bf8 Ng5+ Ke7 Ra8 h6 Nh7 Bg7 Ra7+ Ke8 h5 Rgg4 f3 Rgc4 Rxg7 Rxc2+ Kh3 Rxa3 f4 Rf2 Nf6+ Kf8 Rg4 a5 Ne4 Rc2 Rg6 Re3 Nd6 Rcc3 Rxe6 Rxg3+ Kh4 Rg1 f5 Rc2 Re8+ Kg7 f6+ Kh7 Re7+ Kg8 Kh3 Rc3+ Kh4 Rc2 Kh3 Rc3+ Kh2 Rcg3 f7+ Kg7 Nf5+ Kf8 Nxg3 Rxg3","Ruy Lopez"],["1966.??.??","Santa Monica","Santa Monica","4","Donner, Jan Hein","","","1/2-1/2","C89","Ruy Lopez: Marshall Attack, Modern Main Line","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d5 exd5 Nxd5 Nxe5 Nxe5 Rxe5 c6 d4 Bd6 Re1 Qh4 g3 Qh3 Be3 Bg4 Qd3 Nxe3 Rxe3 c5 Qf1 Qh6 Nd2 Rad8 Nf3 Bxf3 Rxf3 cxd4 cxd4 Qd2 Rd3 Qg5 Rc1 Rc8 Rdc3 Rxc3 bxc3 Ba3 Rc2 Rc8 c4 bxc4 Bxc4 Qf5 Bd3 Rxc2 Bxf5 Rc1 Qxc1 Bxc1 Kf1 h6 Ke2 Kf8","Ruy Lopez"],["1966.??.??","Santa Monica","Santa Monica","6","Larsen, Bent","","","0-1","C82","Ruy Lopez: Open, St. Petersburg Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Nxe4 d4 b5 Bb3 d5 dxe5 Be6 c3 Bc5 Nbd2 O-O Bc2 Bf5 Nb3 Bg4 Nxc5 Nxc5 Re1 Re8 Be3 Ne6 Qd3 g6 Bh6 Ne7 Nd4 Bf5 Nxf5 Nxf5 Bd2 Qh4 Qf1 Nc5 g3 Qc4 Qg2 Nd3 Bxd3 Qxd3 Bg5 c6 g4 Ng7 Re3 Qd2 b3 b4 Qh3 bxc3 Qh6 Ne6","Ruy Lopez"],["1966.??.??","Santa Monica","Santa Monica","10","Reshevsky, Samuel Herman","","","1-0","C92","Ruy Lopez: Closed, Karpov Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d6 h3 Nd7 d4 Nb6 Nbd2 exd4 cxd4 d5 Bc2 Be6 e5 Qd7 Nb3 Bf5 Bg5 Rfe8 Bxe7 Rxe7 Rc1 Nb4 Nc5 Bxc2 Qd2 Qe8 Qxb4 a5 Qc3 Bg6 Nh4 Na4 Qb3 Nxc5 Rxc5 c6 Rec1 Re6 f4 f5 a4 bxa4 Qxa4 Rb8 Qa3 Qd8 Nxg6 hxg6 Rxc6 Rxc6 Rxc6 Qh4 Rxg6 Kh7 Rg5 Rb4 Qf3 Kh6 g3 Qxh3 Qxd5","Ruy Lopez"],["1966.??.??","Santa Monica","Santa Monica","14","Unzicker, Wolfgang","","","1/2-1/2","C83","Ruy Lopez: Open, Classical Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Nxe4 d4 b5 Bb3 d5 dxe5 Be6 c3 Be7 Bc2 O-O Nbd2 f5 Nb3 Qd7 Nbd4 Nxd4 Nxd4 c5 Ne2 Rad8 Nf4 Qc6 a4 Bc8 axb5 axb5 Qh5 g6 Qh6 Rf7 f3 Bf8 Qh3 Ng5 Qg3 Ne6 h4 Nxf4 Bxf4 h5 Bg5 Re8 f4 Kh7 Bd1 Be6 Kh2 Ra8 Bf3 Rfa7 Rxa7+ Rxa7 Qf2 Rd7 Ra1 c4 Ra5 Bc5 Qe2 Bf7 Kh3 Ra7 Rxa7 Bxa7 Be7 Qb6 Bg5 Qe3 Qd1 Qg1 Qxg1 Bxg1 Be7 Be3 g3 Bc1 Ba3 Kg7 Kg2 d4 cxd4 c3 bxc3 Bxa3 d5 Kf8 Kf2 Ke7 Ke2 Bc5 Ke1 Kd8 d6 Kd7 Bb7 Bc4 Bg2 Bb6 Bb7 Ba5 Kd2 Bb6 Ke1 Be3 Bf3 Ke6 Bb7 Kd7 Bf3 Bf7 Ke2 Ba7 Ba8 Bc4+ Ke1 Be6","Ruy Lopez"],["1966.??.??","Santa Monica","Santa Monica","17","Spassky, Boris V","","","1/2-1/2","C89","Ruy Lopez: Marshall Attack, Modern Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d5 exd5 Nxd5 Nxe5 Nxe5 Rxe5 c6 g3 Nf6 d4 Bd6 Re1 Bg4 Qd3 c5 dxc5 Bxc5 Qxd8 Raxd8 Bf4 h6 Na3 g5 Be3 Bxe3 Rxe3 Rd2 Nc2 Re8 Rxe8+ Nxe8 Ne3 Bf3 Bc2 Nd6 b3 Kf8 a4 Ne4 Bxe4 Bxe4 axb5 axb5 b4 Rb2 g4 Kg7 Kf1 Kf6 Ra5 Rb1+ Ke2 Rb2+ Kf1","Ruy Lopez"],["1967.??.??","Monte Carlo","Monte Carlo","2","Forintos, Gyozo V","","","1-0","C95","Ruy Lopez: Closed, Breyer Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Nb8 d4 Nbd7 Nh4 exd4 cxd4 Nb6 Nd2 Nfd5 Nhf3 Nb4 d5 c5 dxc6 Nxc6 Nf1 Bf6 Be3 Na5 Bd4 Bb7 Ng3 Nbc4 Bxc4 Nxc4 Nh5 Ne5 Nxe5 dxe5 Bc5 Qxd1 Raxd1 Rfd8 Nxf6+ gxf6 Rxd8+ Rxd8 Be7 Rd4 Re3 Bxe4 Bxf6 Kf8 a3 Bc6 Rxe5 Rd5 Re3 Rf5 Be5 h5 f3 a5 Kf2 a4 g4 hxg4 hxg4 Rg5 Bf6 Rd5 f4 Rd2+ Kg3 Rg2+ Kh4 Rd2 f5 Bd5 Kg5 Rd1 Rc3 Re1 Rh3 Ke8 Rd3","Ruy Lopez"],["1967.??.??","Monte Carlo","Monte Carlo","7","Smyslov, Vassily","","","1/2-1/2","C69","Ruy Lopez: Exchange Variation, Gligoric Variation","e4 e5 Nf3 Nc6 Bb5 a6 Bxc6 dxc6 O-O f6 d4 Bg4 dxe5 Qxd1 Rxd1 fxe5 Rd3 Bxf3 Rxf3 Nf6 Nc3 Bb4 Bg5 Bxc3 bxc3 Rf8 Bxf6 Rxf6 Rxf6 gxf6 Rd1 Ke7 Rd3 Rf8 Kf1 a5 g4 Rg8 h3 b5 Ke2 Ke6 Kf3 Rb8 Ke3 c5 c4 bxc4 Ra3 Rb5 Kd2 Kd6 Rf3 Ke6 Kc1 Rb8 Ra3 Rb5 Rc3 Kd6 a3 Rb8 Rxc4 h5 f3 Kc6 Rc3 Rd8 Rd3 Rh8 Kd2 c4 Re3 Kc5 Re2 hxg4 hxg4 Rh1 Rg2","Ruy Lopez"],["1967.??.??","Sousse Interzonal+","Sousse","1","Barczay, Laszlo","","","1-0","C95","Ruy Lopez: Closed, Breyer Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Nb8 d4 Nbd7 Nh4 exd4 cxd4 Nb6 Nf3 d5 e5 Ne4 Nbd2 Nxd2 Bxd2 Bf5 Bc2 Bxc2 Qxc2 Rc8 b3 Nd7 e6 fxe6 Rxe6 c5 Ba5 Qxa5 Rxe7 Qd8 Ng5","Ruy Lopez"],["1967.??.??","Sousse Interzonal+","Sousse","7","Stein, Leonid","","","1-0","C92","Ruy Lopez: Closed, Flohr System","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Bb7 d4 Na5 Bc2 Nc4 b3 Nb6 Nbd2 Nbd7 b4 exd4 cxd4 a5 bxa5 c5 e5 dxe5 dxe5 Nd5 Ne4 Nb4 Bb1 Rxa5 Qe2 Nb6 Nfg5 Bxe4 Qxe4 g6 Qh4 h5 Qg3 Nc4 Nf3 Kg7 Qf4 Rh8 e6 f5 Bxf5 Qf8 Be4 Qxf4 Bxf4 Re8 Rad1 Ra6 Rd7 Rxe6 Ng5 Rf6 Bf3 Rxf4 Ne6+ Kf6 Nxf4 Ne5 Rb7 Bd6 Kf1 Nc2 Re4 Nd4 Rb6 Rd8 Nd5+ Kf5 Ne3+ Ke6 Be2 Kd7 Bxb5+ Nxb5 Rxb5 Kc6 a4 Bc7 Ke2 g5 g3 Ra8 Rb2 Rf8 f4 gxf4 gxf4 Nf7 Re6+ Nd6 f5 Ra8 Rd2 Rxa4 f6","Ruy Lopez"],["1967.??.??","Sousse Interzonal+","Sousse","11","Reshevsky, Samuel Herman","","","1-0","C93","Ruy Lopez: Closed, Smyslov Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d6 h3 h6 d4 Re8 Nbd2 Bf8 Nf1 Bd7 Ng3 Na5 Bc2 c5 b3 Nc6 Be3 cxd4 cxd4 Nb4 Bb1 a5 a3 Na6 Bd3 Qc7 Qe2 Qb7 Rad1 g6 Qb2 Qb8 Bb1 Kh7 dxe5 dxe5 Nxe5 Rxe5 Bf4 Qb7 Bxe5 Ne8 Ne2 Nc5 Nf4 b4 a4 Bc6 Nd5 Nd7 Bd4 Ng7 Bd3 Ne6 Bc4 Re8 Bf6 Nec5 Qc2 Ne6 Ba1 Qa7 Kh1 Bg7 Bxg7 Kxg7 Bb5 Bxb5 axb5 Rb8 Qc6 Nef8 e5 Kg8 Nf6+ Nxf6 exf6 Rb6","Ruy Lopez"],["1968.??.??","Athens sim","Athens","?","Anastassopulos, A.","","","1-0","C69","Ruy Lopez: Exchange Variation, Gligoric Variation","e4 e5 Nf3 Nc6 Bb5 a6 Bxc6 dxc6 O-O f6 d4 exd4 Nxd4 c5 Nb3 Qxd1 Rxd1 Bd7 a4 O-O-O Be3 b6 Nc3 Bd6 a5 c4 axb6 cxb3 Rxa6 Ne7 Ra8+ Kb7 Ra7+ Kb8 Nd5 Nxd5 exd5 Bc8 bxc7+ Bxc7 c4 Bb7 Rd3 Rd7 Rxb3 Bd6 Ra5 Kc8 Rab5 Bb8 g3 Re8 c5 Ba7 c6 Bxc6 dxc6 Rc7 Rb7","Ruy Lopez"],["1968.??.??","Netanya-A","Netanya","7","Ree, Hans","","","1-0","C81","Ruy Lopez: Open, Howell Attack, Ekstrom Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Nxe4 d4 b5 Bb3 d5 dxe5 Be6 Qe2 Be7 Rd1 O-O c4 bxc4 Bxc4 Qd7 Nc3 Nxc3 bxc3 f6 exf6 Bxf6 Bg5 Na5 Qxe6+ Qxe6 Bxd5 Qxd5 Rxd5 Bxc3 Rc1 Bb4 Rxc7 Rac8 Ra7 Rc2 Rdd7 Bc3 Rac7 h6 Be3","Ruy Lopez"],["1968.??.??","Vinkovci","Vinkovci","1","Wade, Robert Graham","","","1-0","C30","King's Gambit Declined: Petrov's Defense","e4 e5 f4 Nf6 fxe5 Nxe4 Nf3 Ng5 d4 Nxf3+ Qxf3 Qh4+ Qf2 Qxf2+ Kxf2 Nc6 c3 d6 exd6 Bxd6 Nd2 Be6 Ne4 Be7 Ng5 Bxg5 Bxg5 h6 Bh4 g5 Bg3 O-O-O Bb5 f5 Bxc6 bxc6 Be5 Rhg8 h4 g4 h5 g3+ Bxg3 Rg4 Rh4 Rdg8 Rxg4 Rxg4 Re1 Kd7 Re5 f4 Bh2 Rh4 Bg1 Bd5 g3 Rg4 Bh2 f3 b3 a6 c4 Rxd4 cxd5 Rd2+ Kxf3 Rxh2 dxc6+ Kxc6 Re6+ Kd7 Rxh6 Rxa2 Rg6",""],["1968.??.??","Vinkovci","Vinkovci","6","Minic, Dragoljub","","","1-0","C33","King's Gambit Accepted: Bishop's Gambit, Steinitz Defense","e4 e5 f4 exf4 Bc4 Ne7 Nc3 c6 Nf3 d5 Bb3 dxe4 Nxe4 Nd5 Qe2 Be7 c4 Nc7 d4 O-O Bxf4 Ne6 Be3 Bb4+ Kf2 Nd7 c5 Nf6 Nxf6+ Qxf6 Rhf1 Nf4 Bxf4 Qxf4 g3 Qh6 Kg1 Bh3 Ne5 Bxf1 Rxf1 Bd2 Rf3 Rad8 Nxf7 Rxf7 Qe7","King's Gambit Accepted"],["1968.??.??","Vinkovci","Vinkovci","8","Matanovic, Aleksandar","","","1-0","C92","Ruy Lopez: Closed, Karpov Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Nd7 d4 Bf6 a4 Na5 Bc2 Nb6 b4 Nac4 a5 Nd7 Bb3 exd4 cxd4 c5 Bf4 cxb4 Nbd2 d5 exd5 Nxa5 Bd6 Nxb3 Qxb3 Re8 Bc7 Rxe1+ Rxe1 Qxc7 Re8+ Nf8 Qxb4 Be7 Rxe7 Qd8 Ne5 Ng6 Nc6 Qf8 Qc5 a5 Rc7 Qe8 d6 Bd7 Ne7+ Kh8 d5 a4 Nb1 Nf8 Na3 f6 Rb7 Qh5 Nxb5 a3 Nxa3 Qd1+ Kh2 Qd2 Qe3 Qa5 Nc4 Qa6 Qb3 Ba4 Qb4 Nd7 Nb2","Ruy Lopez"],["1968.??.??","Vinkovci","Vinkovci","10","Robatsch, Karl","","","1/2-1/2","C95","Ruy Lopez: Closed, Breyer Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Nb8 d4 Nbd7 Nh4 exd4 cxd4 Nb6 Nf3 c5 Bf4 Bb7 dxc5 dxc5 Qxd8 Bxd8 Bd6 Re8 Bxc5 Nbd7 Bd4 Nxe4 Nc3 Bf6 Bd5 Bxd5 Nxd5 Bxd4 Nxd4 Nef6 Rxe8+ Nxe8 a4 bxa4 Rxa4 Nc5 Rc4 Nd3 Nc6 a5 b3 Nb2 Rc2 Nd3 Ra2 Kf8 b4 Rc8 bxa5 Rxc6 a6 Rc1+ Kh2 Nc7 Nxc7 Rxc7 a7 Rxa7 Rxa7 Nxf2 Kg3 Ne4+ Kf4 Nf6 Ke5 h5 Kd6 g6 Ke5 Kg7 Ra4 Nd7+ Kd6 Nf6 Rf4 Ng8 Ke5 Nh6 Rf1 Kf8 Ra1 Kg7 Ra7 Ng8 Ra6 Nh6 Rc6 Ng8 g4 hxg4 hxg4 Nh6 g5 Nf5 Rc7 Ng3 Ra7 Nh5","Ruy Lopez"],["1968.??.??","Vinkovci","Vinkovci","12","Gheorghiu, Florin","","","1/2-1/2","C93","Ruy Lopez: Closed, Smyslov Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 h6 d4 Re8 Nbd2 Bf8 Nf1 Bd7 Ng3 Na5 Bc2 c5 b3 Nc6 Be3 cxd4 cxd4 exd4 Bc1 Nb4 Bb2 d5 e5 Nxc2 Qxc2 Ne4 Nxe4 Bf5 Nf6+ Qxf6 exf6 Bxc2 fxg7 Bxg7 Bxd4 Rxe1+ Rxe1 Be4 Bxg7 Kxg7 Nd4 Rc8 f3 Bg6 Re5 Rc1+ Kh2 Ra1 Rxd5 Rxa2 Kg3 Kf6 Kf4 Rxg2 Rd6+ Kg7 Rxa6 Rh2 Kg3 Rb2 Rb6 Bd3 Rc6 Kh7 h4 Bf1 Kf4 Bd3 Rc3 Bf1 Rc1 Bd3 Rc3 Bf1 Ke3 Rh2 Rc1 Bh3 Nxb5 Be6 Nd4 Rxh4 b4 Rh2 b5 Rb2 Kf4 Rb4 Ke5 h5 Rc7 Kg6 f4 h4 Rc1 h3 f5+ Bxf5 Rg1+ Kh5 Nxf5 Rxb5+ Kf4 Rb4+ Kf3 h2 Rh1 Kg5 Ne3 Rh4 Nf1 Rf4+ Ke3 Rh4 Nxh2 Kf5 Rf1+ Ke6 Nf3 Rg4 Nd4+ Ke7 Nc6+ Ke6 Nd8+ Ke7 Nxf7 Ke6 Nd8+ Ke7 Nc6+ Ke6 Nd4+ Ke7 Kd3 Kd6 Rf6+ Ke5 Rf5+ Kd6 Rh5 Rg1 Nb5+ Ke6 Nc3 Rg4 Ne4 Rg1 Nc5+","Ruy Lopez"],["1970.??.??","Buenos Aires","Buenos Aires","3","Gheorghiu, Florin","","","1-0","C42","Petrov's Defense: Classical Attack","e4 e5 Nf3 Nf6 Nxe5 d6 Nf3 Nxe4 d4 Be7 Bd3 Nf6 h3 O-O O-O Re8 c4 Nc6 Nc3 h6 Re1 Bf8 Rxe8 Qxe8 Bf4 Bd7 Qd2 Qc8 d5 Nb4 Ne4 Nxe4 Bxe4 Na6 Nd4 Nc5 Bc2 a5 Re1 Qd8 Re3 b6 Rg3 Kh8 Nf3 Qe7 Qd4 Qf6 Qxf6 gxf6 Nd4 Re8 Re3 Rb8 b3 b5 cxb5 Bxb5 Nf5 Bd7 Nxh6 Rb4 Rg3 Bxh6 Bxh6 Ne4 Bg7+ Kh7 f3","Petrov's Defense"],["1970.??.??","Buenos Aires","Buenos Aires","6","O'Kelly de Galway, Alberic","","","1-0","C98","Ruy Lopez: Closed, Chigorin Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Nc6 dxc5 dxc5 Nf1 Be6 Ne3 Rad8 Qe2 c4 Nf5 Rfe8 Bg5 Nd7 Bxe7 Nxe7 Ng5 h6 Nxe6 fxe6 Ne3 Ng6 g3 Nf6 Red1 Rxd1+ Rxd1 Rd8 Rxd8+ Qxd8 b3 cxb3 Bxb3 Nf8 c4 Qd7 Qc2 Qb7 cxb5 axb5 Ng4 N6d7 Qd3 Qc6 Qe3 Kf7 Nxe5+ Nxe5 Qf4+","Ruy Lopez"],["1970.??.??","Buenos Aires","Buenos Aires","10","Rossetto, Hector","","","1-0","C99","Ruy Lopez: Closed, Chigorin Defense, Panov System","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O b5 Bb3 Be7 Re1 d6 c3 Na5 Bc2 c5 d4 Qc7 Nbd2 O-O h3 cxd4 cxd4 Bb7 d5 Rfc8 Bd3 Nc4 Bxc4 bxc4 Re3 a5 Rc3 Qd7 Qc2 Ba6 Nxc4 Rxc4 Rxc4 Bxc4 Qxc4 Rc8 Qd3 Qa4 Bg5 h6 b3 Qa3 Bxf6 Bxf6 Qd2 Bd8 Rb1 Bb6 Rb2 Qc5 Ne1 Qc1 Qxc1 Rxc1 Kf1 f5 exf5 Rd1 Ke2 Rxd5 Nc2 Kf7 Ne3 Rb5 a4 Rc5 b4 axb4 Rxb4 Bc7 Rc4 Rxc4 Nxc4 Ke7 Ne3 Kd7 Nd5 Ba5 Kd3 Kc6 Kc4 Be1 f3 Bd2 g3 Be1 g4 Ba5 Ne7+ Kd7 Kb5","Ruy Lopez"],["1970.??.??","Buenos Aires","Buenos Aires","12","Bisguier, Arthur Bernard","","","1-0","C78","Ruy Lopez: Morphy Defense, Arkhangelsk Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O b5 Bb3 Bb7 d4 Nxd4 Nxd4 exd4 c3 Nxe4 Re1 Bd6 Nd2 Bxh2+ Kf1 d5 Qh5 O-O Qxh2 dxc3 Nxe4 dxe4 bxc3 c5 Re3 c4 Bc2 Qf6 Rf3 Qe6 Rh3 Qf5 Be3 Rad8 Re1 Rd7 Bd4 Re8 Rh5 g5 g4","Ruy Lopez"],["1970.??.??","Buenos Aires","Buenos Aires","14","Rubinetti, Jorge A","","","1-0","C69","Ruy Lopez: Exchange Variation, Gligoric Variation","e4 e5 Nf3 Nc6 Bb5 a6 Bxc6 dxc6 O-O f6 d4 Bg4 dxe5 Qxd1 Rxd1 Bxf3 gxf3 fxe5 Be3 Bd6 Nd2 Ne7 Nc4 O-O-O Rd3 b5 Na5 Bb4 Nb3 Rxd3 cxd3 Ng6 Kf1 Rf8 Ke2 Nf4+ Bxf4 Rxf4 Rg1 Rh4 Rxg7 Rxh2 a3 Bd6 f4 exf4 d4 Kd8 Na5 c5 e5 Bf8 Nc6+ Ke8 Rxc7","Ruy Lopez"],["1970.??.??","Herceg Novi blitz","Herceg Novi","?","Matulovic, Milan","","","1-0","C63","Ruy Lopez: Schliemann Defense, Classical Variation","e4 e5 Nf3 Nc6 Bb5 f5 Nc3 fxe4 Nxe4 d5 Nxe5 dxe4 Nxc6 Qg5 Qe2 Nf6 f4 Qxf4 d4 Qh4+ g3 Qh3 Bg5 a6 Ba4 Bd7 Bxf6 gxf6 Qxe4+ Kf7 Ne5+ fxe5 Rf1+ Ke7 Bxd7 Kxd7 Rf7+ Ke8 Rxc7 Bd6 Rxb7 Rc8 O-O-O Qxh2 dxe5 Be7 Rxe7+ Kxe7 Qb7+ Ke6 Qd7+ Kxe5 Qd5+ Kf6 Rf1+ Kg6 Qf5+ Kh6 Qe6+ Kh5 Rf5+ Kg4 Rf4+ Kxg3 Qg4#","Ruy Lopez"],["1970.??.??","Palma de Mallorca Interzonal","Palma de Mallorca","13","Ivkov, Borislav","","","1-0","C93","Ruy Lopez: Closed, Smyslov Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 h6 d4 Re8 Be3 Bf8 Nbd2 Bb7 Qb1 Qb8 a3 Nd8 Bc2 c6 b4 Qc7 Bd3 Ne6 Qc2 Rac8 a4 Nd7 Qb3 Nf4 Bxf4 exf4 c4 bxc4 Bxc4 d5 Bd3 Rb8 Qc3 Qb6 Reb1 Ba8 a5 Qa7 e5 Rb7 Qxc6 Bxb4 Qxa6 Qb8 Bc2 Re6 Qd3 Nf8 Qf5 Ra6 Nb3 g6 Qxf4 Bc3 Nc5 Rxa5 Nxb7 Rxa1 Rxa1 Ne6 Qf6 Bxa1 Nd6 Qc7 Bxg6 Qc1+ Ne1 Qxe1+ Kh2 Ng5 Bxf7+","Ruy Lopez"],["1970.??.??","Palma de Mallorca Interzonal","Palma de Mallorca","15","Jimenez Zerquera, Eleazar","","","1/2-1/2","C87","Ruy Lopez: Closed, Averbakh Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 d6 c3 O-O d4 exd4 cxd4 d5 e5 Ne4 Nc3 Nxc3 bxc3 Bf5 Bxc6 bxc6 Qa4 c5 dxc5 Bxc5 Ba3 Qe7 Bxc5 Qxc5 Nd4 Bg6 Qc6 Qxc6 Nxc6 Rfe8 Nb4 c6 Nxc6 Rac8 Nb4 Rxc3 Nxd5 Ra3 f4 h5 Ne3 Bd3 Rad1 Rb8 Rd2 Rb1 Kf2 Rxe1 Kxe1 Bb1 Rd8+ Kh7 Kf2 Bxa2 f5 Ra5 Re8 Rb5 Kf3 a5 Kf4 a4 Rd8 Rb4+ Kf3 Bb3 h3 Rb5 Kf4 Rb4+ Kf3 Rb5","Ruy Lopez"],["1970.??.??","Siegen olm","Siegen","15","Unzicker, Wolfgang","","","1-0","C69","Ruy Lopez: Exchange Variation, Gligoric Variation","e4 e5 Nf3 Nc6 Bb5 a6 Bxc6 dxc6 O-O f6 d4 exd4 Nxd4 Ne7 Be3 Ng6 Nd2 Bd6 Nc4 O-O Qd3 Ne5 Nxe5 Bxe5 f4 Bd6 f5 Qe7 Bf4 Bxf4 Rxf4 Bd7 Re1 Qc5 c3 Rae8 g4 Qd6 Qg3 Re7 Nf3 c5 e5 fxe5 Rfe4 Bc6 Rxe5 Rfe8 Rxe7 Rxe7 Ne5 h6 h4 Bd7 Qf4 Qf6 Re2 Bc8 Qc4+ Kh7 Ng6 Rxe2 Qxe2 Bd7 Qe7 Qxe7 Nxe7 g5 hxg5 hxg5 Nd5 Bc6 Nxc7 Bf3 Ne8 Kh6 Nf6 Kg7 Kf2 Bd1 Nd7 c4 Kg3","Ruy Lopez"],["1970.??.??","Rovinj/Zagreb","Zagreb","10","Gligoric, Svetozar","","","1-0","C93","Ruy Lopez: Closed, Smyslov Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 h6 d4 Re8 Nbd2 Bf8 Nf1 Bb7 Ng3 Na5 Bc2 Nc4 b3 Nb6 a4 c5 d5 c4 b4 Bc8 Be3 Bd7 a5 Nc8 Qd2 Nh7 Kh2 Be7 Nf5 Bg5 Nxg5 hxg5 g4 g6 Ng3 f6 Rh1 Rf8 Kg2 Rf7 f3 Nf8 h4 gxh4 Rxh4 Rh7 Rah1 Rxh4 Rxh4 g5 Rh6 Kg7 Rxf6","Ruy Lopez"],["1971.??.??","Buenos Aires","Buenos Aires","?","Szmetan, Jorge","","","1/2-1/2","C31","King's Gambit Declined: Falkbeer Countergambit, Blackburne Attack","e4 e5 f4 d5 Nf3 dxe4 Nxe5 Nd7 Nc3 Ngf6 Bc4 Nxe5 fxe5 Qd4 Bxf7+ Kxf7 exf6 Bc5 Qe2 gxf6 Rf1 h5 b3 e3 Qc4+ Qxc4 bxc4 exd2+ Bxd2 Re8+ Kd1 Bg4+ Kc1 Ba3+ Kb1 Rad8 Nd5 Re6 Bc1 Be2 Re1 Bc5 a4 Bxc4 Rxe6 Kxe6 Nxc7+ Kf5 a5 Rd7 Ra4 Bf7 Nb5 Rd1 Kb2 Be8 Rc4 Bg1 Nc3 Rd4 Rc7 Bc6 Ne2 Rb4+ Kc3 Rb1 Nxg1 Rxc1 Ne2 Rb1 Nd4+ Ke5 Nxc6+ Kd6 Rf7 Kxc6 Rxf6+ Kc7 Rf5 h4 h3 Ra1 Rg5 Kc6 Kc4 Ra2 Kb3 Ra1 Rg6+ Kb5 Rg5+ Ka6 Rg4 Rb1+ Kc4 Kxa5 Kc3 Rg1 Rg7 Kb6 Kc4 Rc1 Rg6+ Ka5 Kd3 Kb5 Rg4 a5 Rxh4 a4 Kc3 a3 Rb4+ Kc5 Ra4 Rg1 Rxa3 Rxg2 Kb2 Rh2 Rc3+ Kb5 Kb3 Rh1 Rg3 b6 Rg5+ Ka6 Rh5 Rb1+ Kc3 Rh1 Rh8 Kb5 h4 Rh3+ Kd4 Kb4 h5 Rh4+ Ke5 Kc3 h6 Kxc2 Kf6 b5 Kg5 Rh1 Rb8 Rg1+ Kf5 Rh1 Kg6 Rg1+ Kf7 Rh1 Kg7 Rg1+ Kh8 Rg5 h7 Kc3 Rc8+ Kd4 Rg8 Rh5 Rg4+ Kc3",""],["1971.??.??","Candidats final","Buenos Aires","5","Petrosian, Tigran V","2760","2640","1/2-1/2","C42","Petrov's Defense: Classical Attack, Closed Variation","e4 e5 Nf3 Nf6 Nxe5 d6 Nf3 Nxe4 d4 Nf6 Bd3 Be7 h3 O-O O-O c6 Re1 Nbd7 Bf4 Re8 c4 Nf8 Nc3 a6 Qb3 Ne6 Bh2 Bf8 Re2 b5 Qc2 Bb7 Rae1 g6 b4 bxc4 Bxc4 Nc7 Bb3 Rxe2 Rxe2 Ncd5 a3 a5 Nxd5 cxd5 b5 a4 Ba2 Qb6 Qb1 Ra5 Rb2 Ne4 Bf4 Nc3 Qc2 Rxb5 Rxb5 Nxb5 Qxa4 Qa6 Qxa6 Bxa6 Be3 Nxa3 Bxd5 Bc4 Bc6 Nc2 Bd2 Be2 Be4 Bxf3 Bxc2","Petrov's Defense"],["1971.??.??","Manhattan blitz","New York","?","Shipman, Walter","","","1-0","C60","Ruy Lopez: Cozio Defense","e4 e5 Nf3 Nc6 Bb5 Nge7 c3 d5 Nxe5 dxe4 Qe2 Qd5 Nxc6 Nxc6 d4 Bf5 Nd2 O-O-O O-O Bg6 Nb3 f5 Be3 Qf7 Bxc6 bxc6 Qa6+ Kd7 Na5 Qe6 c4 Be7 Rfd1 Rb8 d5 cxd5 Rxd5+ Bd6 Rad1 Ke7 Nc6+ Kf7 Nxb8 Rxb8 Rxd6 cxd6 Qxa7+","Ruy Lopez"],["1971.??.??","Manhattan blitz","New York","?","Gore, James","","","1-0","C98","Ruy Lopez: Closed, Chigorin Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Nc6 d5 Nd8 a4 Rb8 b4 Ne8 Nf1 g6 bxc5 dxc5 Bh6 Ng7 Ne3 Bd6 Qd2 f6 Ng4 Bxg4 hxg4 Nf7 axb5 axb5 Ra6 Ra8 Rea1 Qb7 Rxa8 Rxa8 Rxa8+ Qxa8 Be3 Qc8 g5 f5 Qe2 f4 Bc1 c4 Bd1 Qa6 Qb2 Ne8 g3 fxg3 fxg3 Nc7 Kg2 Kg7 Ne1 Qa5 Be2 Na6 Be3 Nc5 Bxc5 Bxc5 Nf3 Ba7 Bf1 Qb6 Kh3 Qc5 Qa2 Qc8+ Kg2 Qc5 Qe2 Qc8 Qd2 Qc5","Ruy Lopez"],["1971.??.??","Manhattan blitz","New York","?","Brandts, Paul","","","1-0","C98","Ruy Lopez: Closed, Chigorin Defense","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Na5 Bc2 c5 d4 Qc7 Nbd2 Nc6 d5 Nd8 a4 Qb8 b4 cxb4 cxb4 bxa4 Bxa4 Qxb4 Ba3 Qb7 Nc4 Ne8 Bxe8 Rxe8 Bxd6 f6 Rb1 Qa7 Qa4 Bd7 Qa3 Bb5 Bxe7 Qxe7 Nd6 Rb8 Re3 Nf7 Nxe8 Qxe8 Nd2 Rd8 Rc1 Nd6 Rc7 Qg6 Rg3 Qh6 Rgxg7+ Qxg7 Rxg7+ Kxg7 f3 Kf7 Nb3 Ke7 Nc5 Rc8 Nb7","Ruy Lopez"],["1971.??.??","Manhattan blitz","New York","?","Kramer, George Mortimer","","","1-0","C69","Ruy Lopez: Exchange Variation, Normal Variation","e4 e5 Nf3 Nc6 Bb5 a6 Bxc6 dxc6 O-O Bg4 h3 Bxf3 Qxf3 Qd7 d3 O-O-O Be3 f6 Nd2 Ne7 b4 Ng6 Rfb1 Be7 a4 b6 Qe2 Kb7 Nc4 Nf4 Qf3 Ne6 Rb3 Nd4 Bxd4 Qxd4 Rab1 h5 b5 cxb5 axb5 a5 Ne3 Qd7 Nd5 Bc5 Rc3 Qd6 Rc4 Rd7 c3 f5 Qxf5 Rf8 Qxh5 Bxf2+ Kh1 Rdf7 Rc6 Bg3 Qxf7 Rxf7 Rxd6 cxd6 Ne3 Rf2 Nf5 Bf4 Nxd6+ Ka7 Nc4 Rc2 g3 Bxg3 Ne3 Rh2+ Kg1 Rxh3 Kg2","Ruy Lopez"],["1972.??.??","World Championship 28th","Reykjavik","10","Spassky, Boris V","2785","2660","1-0","C95","Ruy Lopez: Closed, Breyer Defense, Zaitsev Hybrid","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Nb8 d4 Nbd7 Nbd2 Bb7 Bc2 Re8 b4 Bf8 a4 Nb6 a5 Nbd7 Bb2 Qb8 Rb1 c5 bxc5 dxc5 dxe5 Nxe5 Nxe5 Qxe5 c4 Qf4 Bxf6 Qxf6 cxb5 Red8 Qc1 Qc3 Nf3 Qxa5 Bb3 axb5 Qf4 Rd7 Ne5 Qc7 Rbd1 Re7 Bxf7+ Rxf7 Qxf7+ Qxf7 Nxf7 Bxe4 Rxe4 Kxf7 Rd7+ Kf6 Rb7 Ra1+ Kh2 Bd6+ g3 b4 Kg2 h5 Rb6 Rd1 Kf3 Kf7 Ke2 Rd5 f4 g6 g4 hxg4 hxg4 g5 f5 Be5 Rb5 Kf6 Rexb4 Bd4 Rb6+ Ke5 Kf3 Rd8 Rb8 Rd7 R4b7 Rd6 Rb6 Rd7 Rg6 Kd5 Rxg5 Be5 f6 Kd4 Rb1","Ruy Lopez"],["1972.??.??","World Championship 28th","Reykjavik","16","Spassky, Boris V","2785","2660","1/2-1/2","C69","Ruy Lopez: Exchange Variation, Gligoric Variation","e4 e5 Nf3 Nc6 Bb5 a6 Bxc6 dxc6 O-O f6 d4 Bg4 dxe5 Qxd1 Rxd1 fxe5 Rd3 Bd6 Nbd2 Nf6 Nc4 Nxe4 Ncxe5 Bxf3 Nxf3 O-O Be3 b5 c4 Rab8 Rc1 bxc4 Rd4 Rfe8 Nd2 Nxd2 Rxd2 Re4 g3 Be5 Rcc2 Kf7 Kg2 Rxb2 Kf3 c3 Kxe4 cxd2 Rxd2 Rb5 Rc2 Bd6 Rxc6 Ra5 Bf4 Ra4+ Kf3 Ra3+ Ke4 Rxa2 Bxd6 cxd6 Rxd6 Rxf2 Rxa6 Rxh2 Kf3 Rd2 Ra7+ Kf6 Ra6+ Ke7 Ra7+ Rd7 Ra2 Ke6 Kg2 Re7 Kh3 Kf6 Ra6+ Re6 Ra5 h6 Ra2 Kf5 Rf2+ Kg5 Rf7 g6 Rf4 h5 Rf3 Rf6 Ra3 Re6 Rf3 Re4 Ra3 Kh6 Ra6 Re5 Kh4 Re4+ Kh3 Re7 Kh4 Re5 Rb6 Kg7 Rb4 Kh6 Rb6 Re1 Kh3 Rh1+ Kg2 Ra1 Kh3 Ra4","Ruy Lopez"],["1977.??.??","Cambridge","Cambridge","?","Greenblatt Programm","","","1-0","C33","King's Gambit Accepted: Bishop's Gambit, Bledow Countergambit","e4 e5 f4 exf4 Bc4 d5 Bxd5 Nf6 Nc3 Bb4 Nf3 O-O O-O Nxd5 Nxd5 Bd6 d4 g5 Nxg5 Qxg5 e5 Bh3 Rf2 Bxe5 dxe5 c6 Bxf4 Qg7 Nf6+ Kh8 Qh5 Rd8 Qxh3 Na6 Rf3 Qg6 Rc1 Kg7 Rg3 Rh8 Qh6#","King's Gambit Accepted"],["1992.??.??","St Stefan/Belgrade m","Belgrade","1","Spassky, Boris V","2785","2560","1-0","C95","Ruy Lopez: Closed, Breyer Defense, Zaitsev Hybrid","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Nb8 d4 Nbd7 Nbd2 Bb7 Bc2 Re8 Nf1 Bf8 Ng3 g6 Bg5 h6 Bd2 Bg7 a4 c5 d5 c4 b4 Nh7 Be3 h5 Qd2 Rf8 Ra3 Ndf6 Rea1 Qd7 R1a2 Rfc8 Qc1 Bf8 Qa1 Qe8 Nf1 Be7 N1d2 Kg7 Nb1 Nxe4 Bxe4 f5 Bc2 Bxd5 axb5 axb5 Ra7 Kf6 Nbd2 Rxa7 Rxa7 Ra8 g4 hxg4 hxg4 Rxa7 Qxa7 f4 Bxf4 exf4 Nh4 Bf7 Qd4+ Ke6 Nf5 Bf8 Qxf4 Kd7 Nd4 Qe1+ Kg2 Bd5+ Be4 Bxe4+ Nxe4 Be7 Nxb5 Nf8 Nbxd6 Ne6 Qe5","Ruy Lopez"],["1992.??.??","St Stefan/Belgrade m","Belgrade","3","Spassky, Boris V","2785","2560","1/2-1/2","C95","Ruy Lopez: Closed, Breyer Defense, Zaitsev Hybrid","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Nb8 d4 Nbd7 Nbd2 Bb7 Bc2 Re8 Nf1 Bf8 Ng3 g6 Bg5 h6 Bd2 exd4 cxd4 c5 Bf4 cxd4 Nxd4 Ne5 b3 d5 Qd2 dxe4 Nxe4 Nd5 Bg3 Rc8 Re2 f5 Bxe5 Rxe5 Ng3 Rxe2 Ngxe2 Nb4 Rd1 Nxc2 Nxc2 Qxd2 Rxd2 Rc7 Ne3 Kf7 h4 Bc8 Nf4 g5 hxg5 hxg5 Nd3 Bg7 Nd5 Rc6 N5b4 Rc7 Nd5 Rc6 N5b4 Rc7","Ruy Lopez"],["1992.??.??","St Stefan/Belgrade m","Belgrade","5","Spassky, Boris V","2785","2560","0-1","C95","Ruy Lopez: Closed, Breyer Defense, Zaitsev Hybrid","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Nb8 d4 Nbd7 Nbd2 Bb7 Bc2 Re8 Nf1 Bf8 Ng3 g6 Bg5 h6 Bd2 exd4 cxd4 c5 d5 Nb6 Ba5 Nfd7 b3 Bg7 Rc1 Qf6 Rb1 b4 Ne2 Qe7 a3 bxa3 Bc3 f5 Bxg7 Qxg7 Nf4 fxe4 Nh4 g5 Ne6 Qf6 Qg4 Nxd5 Nxg5 hxg5 Qxd7 Nb4 Qxb7 Nxc2 Rxe4 a2 Rf1 Nb4 Rg4 a1=Q Rxa1 Qxa1+ Kh2 Qg7 Qf3 Qe5+ g3 Rf8 Qg2 Qf6 f4 Ra7 Rxg5+ Rg7 Rh5 Qe6 g4 Rxf4","Ruy Lopez"],["1992.??.??","St Stefan/Belgrade m","Belgrade","7","Spassky, Boris V","2785","2560","1-0","C90","Ruy Lopez: Closed, Pilnik Variation","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O d3 Na5 Bc2 c5 Nbd2 Re8 h3 Bf8 Nf1 Bb7 Ng3 g6 Bg5 h6 Bd2 d5 exd5 c4 b4 cxd3 Bxd3 Qxd5 Be4 Nxe4 Nxe4 Bg7 bxa5 f5 Ng3 e4 Nh4 Bf6 Nxg6 e3 Nf4 Qxd2 Rxe3 Qxd1+ Rxd1 Rxe3 fxe3 Rd8 Rxd8+ Bxd8 Nxf5 Bxa5 Nd5 Kf8 e4 Bxd5 exd5 h5 Kf2 Bxc3 Ke3 Kf7 Kd3 Bb2 g4 hxg4 hxg4 Kf6 d6 Ke6 g5 a5 g6 Bf6 g7 Kf7 d7","Ruy Lopez"],["1992.??.??","St Stefan/Belgrade m","Belgrade","9","Spassky, Boris V","2785","2560","1-0","C69","Ruy Lopez: Exchange Variation, Gligoric Variation","e4 e5 Nf3 Nc6 Bb5 a6 Bxc6 dxc6 O-O f6 d4 exd4 Nxd4 c5 Nb3 Qxd1 Rxd1 Bg4 f3 Be6 Nc3 Bd6 Be3 b6 a4 O-O-O a5 Kb7 e5 Be7 Rxd8 Bxd8 Ne4 Kc6 axb6 cxb6 Nbxc5 Bc8 Nxa6 fxe5 Nb4+","Ruy Lopez"],["1992.??.??","St Stefan/Belgrade m","Belgrade","27","Spassky, Boris V","2785","2560","1/2-1/2","C69","Ruy Lopez: Exchange Variation, Gligoric Variation","e4 e5 Nf3 Nc6 Bb5 a6 Bxc6 dxc6 O-O f6 d4 exd4 Nxd4 c5 Ne2 Qxd1 Rxd1 Bd7 Nbc3 Ne7 Bf4 O-O-O Rd2 Ng6 Bg3 Ne5 Bxe5 fxe5 Rad1 c4 Kf1 Bc5 Ng1 Bg4 Rxd8+ Rxd8 Rxd8+ Kxd8 Nce2 Ke7 Ke1 b5 c3 Kf6 h3 Bh5 Ng3 Bf7 Nf3 g6 Nf1 g5 Ke2 Bg6 N3d2 h5 Ne3 c6 Kf3 Bf7 Ndf1 a5 Ke2 Be6 Ng3 Kg6 a3 Bf7 Ngf5 Be6 Kf3 Bd7 Kg3 Be6 h4 Bd7 hxg5 Kxg5 Nh4 Bg4 Nxg4 hxg4 Nf5 a4 f3 gxf3 Kxf3 Bf8 Ne3 Kh5 Nf5 Bc5","Ruy Lopez"],["1992.??.??","St Stefan/Belgrade m","Belgrade","29","Spassky, Boris V","2785","2560","1/2-1/2","C95","Ruy Lopez: Closed, Breyer Defense, Zaitsev Hybrid","e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3 Nb8 d4 Nbd7 c4 c6 cxb5 axb5 Nc3 Bb7 Bg5 b4 Nb1 h6 Bh4 c5 dxe5 Nxe4 Bxe7 Qxe7 exd6 Qf6 Nbd2 Nxd6 Nc4 Nxc4 Bxc4 Nb6 Ne5 Rae8 Bxf7+ Rxf7 Nxf7 Rxe1+ Qxe1 Kxf7 Qe3 Qg5 Qxg5 hxg5 b3 Ke6 a3 Kd6 axb4 cxb4 Ra5 Nd5 f3 Bc8 Kf2 Bf5 Ra7 g6 Ra6+ Kc5 Ke1 Nf4 g3 Nxh3 Kd2 Kb5 Rd6 Kc5 Ra6 Nf2 g4 Bd3 Re6 Kd5 Rb6 Kc5 Re6","Ruy Lopez"]],"chips":[["Ruy Lopez",112],["Italian Game",7],["King's Gambit Accepted",6],["Vienna Game",6],["Petrov's Defense",4]],"trees":{"Ruy Lopez":{"slug":"e4-e5--ruy-lopez","moves":"1.e4 e5 2.Nf3 Nc6 3.Bb5","n":112},"Italian Game":{"slug":"e4-e5--italian-game","moves":"1.e4 e5 2.Nf3 Nc6 3.Bc4","n":7},"King's Gambit Accepted":{"slug":"e4-e5--king-s-gambit-accepted","moves":"1.e4 e5 2.f4 exf4","n":6},"Vienna Game":{"slug":"e4-e5--vienna-game","moves":"1.e4 e5","n":6},"Petrov's Defense":{"slug":"e4-e5--petrov-s-defense","moves":"1.e4 e5 2.Nf3 Nf6","n":4}},"player":"Fischer","playerShort":"Fischer, R","side":"white"};
+const ME=DATA.player, MESHORT=DATA.playerShort, SIDE=DATA.side, WIN=SIDE==='white'?'1-0':'0-1', LOSS=SIDE==='white'?'0-1':'1-0';
+(function(){
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const store={get(k){try{return localStorage.getItem('cw_'+DATA.side+'_'+k)}catch(e){return null}},set(k,v){try{localStorage.setItem('cw_'+DATA.side+'_'+k,v)}catch(e){}}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const files='abcdefgh';
+const G=DATA.games.map((r,i)=>({i,date:r[0],event:r[1],site:r[2],round:r[3],opp:r[4],welo:r[5],belo:r[6],res:r[7],eco:r[8],opn:r[9],moves:r[10].split(' '),fam:r[11]||''}));
+const last=n=>n.split(',')[0].trim();
+const short=n=>{const p=n.split(',');return p.length>1?p[0].trim()+', '+p[1].trim()[0]:n};
+const yr=g=>g.date.slice(0,4).replace(/\?/g,'');
+let view=[], shown=0, fam='', q='', sortk='new', cur={k:null,p:0}, flipped=(store.get('flip')===null?SIDE==='black':store.get('flip')==='1');
+const PAGE=25;
+let hashOK=false; addEventListener('load',()=>{hashOK=true});
+
+/* ---------- list, filter, sort ---------- */
+function applyFilter(){
+  const terms=q.toLowerCase().split(/\s+/).filter(Boolean);
+  view=G.filter(g=>{
+    if(fam&&g.fam!==fam) return false;
+    if(!terms.length) return true;
+    const hay=(g.opp+' '+g.event+' '+g.site+' '+g.date+' '+g.opn+' '+g.eco+' '+g.res).toLowerCase();
+    return terms.every(t=>hay.includes(t));
+  });
+  const num=v=>parseInt(v)||0;
+  const cmp={new:(a,b)=>b.date.localeCompare(a.date)||b.i-a.i, old:(a,b)=>a.date.localeCompare(b.date)||a.i-b.i,
+    elo:(a,b)=>num(SIDE==='white'?b.belo:b.welo)-num(SIDE==='white'?a.belo:a.welo), long:(a,b)=>b.moves.length-a.moves.length}[sortk];
+  view.sort(cmp);
+  shown=0; $('#games').innerHTML=''; renderMore(); renderToc(); renderStats();
+}
+function renderStats(){
+  let w=0,d=0,l=0; view.forEach(g=>{if(g.res===WIN)w++;else if(g.res===LOSS)l++;else d++});
+  const n=view.length, sc=n?Math.round((w+d/2)/n*100):0;
+  $('#stats').innerHTML=n?`<b>${n}</b> game${n==1?'':'s'} · ${ME} <b>+${w} =${d} −${l}</b> · score <b>${sc}%</b>`:'';
+}
+function renderToc(){
+  $('#tocn').textContent='('+view.length+')';
+  $('#toc').innerHTML=view.map(g=>`<a data-k="${g.i}" title="${esc(g.event)} ${esc(g.date)}">${yr(g)} · ${esc(last(g.opp))} <span class="r">${g.res.replace('1/2-1/2','½')}</span></a>`).join('');
+  markToc();
+}
+function markToc(){ $$('#toc a').forEach(a=>a.classList.toggle('on',cur.k!==null&&+a.dataset.k===cur.k)); const on=$('#toc a.on'), box=$('nav.toc'); if(on&&box.offsetParent!==null){ const t=on.offsetTop, h=box.clientHeight; if(t<box.scrollTop+30||t>box.scrollTop+h-60) box.scrollTop=Math.max(0,t-h/2) } }
+function movesHTML(g){
+  return g.moves.map((s,i)=>`<a class="mv" data-k="${g.i}" data-p="${i+1}">${i%2?'':(i/2+1)+'.'}${esc(s)}</a>`).join(' ');
+}
+function blockHTML(g){
+  const ev=[g.event,g.site&&g.site!=='?'?g.site:''].filter(Boolean).join(', ');
+  const rd=g.round&&g.round!=='?'&&g.round!=='-'?' · rd '+esc(g.round):'';
+  return `<section class="game" id="g${g.i}" data-k="${g.i}">
+  <h2 data-k="${g.i}">${SIDE==="white"?ME+" – "+esc(last(g.opp)):esc(last(g.opp))+" – "+ME}</h2>
+  <div class="gamehead">${SIDE==='white'?`<b>${esc(MESHORT)}</b>${g.welo?' ('+esc(g.welo)+')':''} – <b>${esc(short(g.opp))}</b>${g.belo?' ('+esc(g.belo)+')':''}`:`<b>${esc(short(g.opp))}</b>${g.welo?' ('+esc(g.welo)+')':''} – <b>${esc(MESHORT)}</b>${g.belo?' ('+esc(g.belo)+')':''}`}</div>
+  <div class="gamehead">${esc(ev)} · ${esc(g.date.replace(/\.\?\?/g,''))}${rd} · ${esc(g.res)}</div>
+  ${g.opn?`<div class="opn">${esc(g.eco)} · ${esc(g.opn)}</div>`:''}
+  <p class="ml">${movesHTML(g)} <span class="res">${esc(g.res)}</span></p>
+</section>`;
+}
+function renderMore(){
+  const next=view.slice(shown,shown+PAGE);
+  $('#games').insertAdjacentHTML('beforeend',next.map(blockHTML).join(''));
+  shown+=next.length;
+  $('#more').hidden=shown>=view.length;
+  $('#more').textContent='Show more games ('+(view.length-shown)+' left)';
+  if(!view.length) $('#games').innerHTML='<p class="empty">No games match.</p>';
+  paintCur();
+}
+function ensureShown(k){ let idx=view.findIndex(g=>g.i===k); if(idx<0) return false; while(shown<=idx) renderMore(); return true }
+
+/* ---------- board ---------- */
+function boardHTML(fen,lm){
+  const rows=fen.split(' ')[0].split('/'); const grid=[];
+  rows.forEach((r,ri)=>{let c=0;for(const ch of r){if(/\d/.test(ch))c+=+ch;else{grid[ri*8+c]=ch;c++}}});
+  let sq='';
+  for(let i=0;i<64;i++){
+    const r=flipped?7-Math.floor(i/8):Math.floor(i/8), c=flipped?7-i%8:i%8;
+    const name=files[c]+(8-r), p=grid[r*8+c];
+    sq+=`<div class="sq ${(r+c)%2?'d':'l'}${lm.includes(name)?' lm':''}">${p?`<div class="pc ${p===p.toUpperCase()?'w':'b'}${p.toUpperCase()}"></div>`:''}</div>`;
+  }
+  const rk=[...Array(8)].map((_,i)=>`<span>${flipped?i+1:8-i}</span>`).join('');
+  const fs=[...Array(8)].map((_,i)=>`<span>${files[flipped?7-i:i]}</span>`).join('');
+  return `<div class="bwrap"><div class="rk">${rk}</div><div class="bd">${sq}</div><div class="fl">${fs}</div></div>`;
+}
+function render(){
+  const g=cur.k===null?null:G[cur.k];
+  const c=new Chess(); let lastMv=null;
+  if(g) for(let i=0;i<cur.p;i++) lastMv=c.move(g.moves[i],{sloppy:true});
+  $('#live').innerHTML=boardHTML(c.fen(),lastMv?[lastMv.from,lastMv.to]:[]);
+  if(!g){ $('#who').textContent='Pick a game'; $('#cur').textContent=''; return }
+  $('#who').textContent=(SIDE==='white'?ME+' – '+last(g.opp):last(g.opp)+' – '+ME)+' · '+yr(g);
+  const lab=cur.p===0?'Start':(cur.p%2?((cur.p+1)/2)+'.':(cur.p/2)+'...')+g.moves[cur.p-1];
+  $('#cur').textContent=lab;
+  let m=c.in_checkmate()?'Checkmate.':c.in_stalemate()?'Stalemate.':'';
+  if(!m&&cur.p===g.moves.length) m='End of game · '+g.res.replace('1/2-1/2','draw');
+  $('#msg').textContent=m||((c.turn()==='w'?'White':'Black')+' to move');
+  $('#bPrev').disabled=$('#bStart').disabled=cur.p===0;
+  $('#bNext').disabled=$('#bEnd').disabled=cur.p>=g.moves.length;
+  const gi=view.findIndex(x=>x.i===cur.k);
+  $('#gPrev').disabled=gi<=0; $('#gNext').disabled=gi<0||gi>=view.length-1;
+}
+function paintCur(){
+  $$('main a.mv.cur').forEach(a=>a.classList.remove('cur'));
+  if(cur.k===null||cur.p===0) return null;
+  const a=document.querySelector(`main a.mv[data-k="${cur.k}"][data-p="${cur.p}"]`);
+  if(a) a.classList.add('cur');
+  return a;
+}
+function go(k,p,fromText){
+  cur={k,p}; render(); markToc();
+  const a=paintCur();
+  if(a&&!fromText){const r=a.getBoundingClientRect(), bp=document.querySelector('aside.bp').getBoundingClientRect(), pb=(bp.width>innerWidth*0.9)?bp.bottom:80;
+    if(r.top<pb+8||r.bottom>innerHeight-20) scrollBy({top:r.top-(pb+innerHeight)/2+r.height/2,behavior:'smooth'})}
+  if(hashOK){try{history.replaceState(null,'','#g'+k)}catch(e){}}
+}
+function gotoGame(k,scroll){
+  if(!ensureShown(k)) return;
+  go(k,0,true);
+  if(scroll){const el=document.getElementById('g'+k); if(el){const bp=document.querySelector('aside.bp').getBoundingClientRect(); const off=(bp.width>innerWidth*0.9)?bp.bottom+10:70; scrollTo({top:el.getBoundingClientRect().top+scrollY-off,behavior:'smooth'})}}
+}
+const L=()=>cur.k===null?0:G[cur.k].moves.length;
+const next=()=>{if(cur.k!==null&&cur.p<L())go(cur.k,cur.p+1)};
+const prev=()=>{if(cur.k!==null&&cur.p>0)go(cur.k,cur.p-1)};
+const start=()=>{if(cur.k!==null)go(cur.k,0)};
+const end=()=>{if(cur.k!==null)go(cur.k,L())};
+function gstep(d){const gi=view.findIndex(x=>x.i===cur.k); const n=view[gi+d]; if(n) gotoGame(n.i,true)}
+const flip=()=>{flipped=!flipped;store.set('flip',flipped?'1':'0');render()};
+$('#bNext').onclick=next;$('#bPrev').onclick=prev;$('#bStart').onclick=start;$('#bEnd').onclick=end;$('#bFlip').onclick=flip;
+$('#gPrev').onclick=()=>gstep(-1);$('#gNext').onclick=()=>gstep(1);
+$('#more').onclick=renderMore;
+document.addEventListener('click',e=>{
+  const a=e.target.closest('a.mv'); if(a){go(+a.dataset.k,+a.dataset.p,true);return}
+  const h=e.target.closest('h2[data-k]'); if(h){go(+h.dataset.k,0,true);return}
+  const t=e.target.closest('#toc a'); if(t){gotoGame(+t.dataset.k,true)}
+});
+document.addEventListener('keydown',e=>{
+  if(e.ctrlKey||e.metaKey||e.altKey||/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName))return;
+  const k=e.key;
+  if(k==='ArrowRight'){next();e.preventDefault()}else if(k==='ArrowLeft'){prev();e.preventDefault()}
+  else if(k==='Home'){start();e.preventDefault()}else if(k==='End'){end();e.preventDefault()}
+  else if(k==='['){gstep(-1)}else if(k===']'){gstep(1)}
+  else if(k==='f'||k==='F')flip();
+});
+/* chips: opening names in this line; each one also swaps the tree above the games */
+(function(){
+  const el=$('#chips'), top=DATA.chips||[];
+  const link=$('#treeLink'), img=$('#treeImg'), cap=$('#treeCap'), note=$('#treeNote');
+  const base=link?{href:link.getAttribute('href'),src:img.getAttribute('src'),cap:cap.textContent}:null;
+  function setTree(f){
+    if(!base) return;
+    const t=f&&DATA.trees&&DATA.trees[f];
+    if(t){
+      link.setAttribute('href','../../trees/'+t.slug+'/'); img.setAttribute('src','../../trees/'+t.slug+'/preview.jpg');
+      img.alt='Opening tree for '+f; cap.textContent='Open the zoomable tree for '+f+' \u2192';
+      note.innerHTML='Tree of the <b>'+t.n+'</b> '+esc(f)+' games. They all start <b>'+esc(t.moves)+'</b> and differ after that.';
+    } else {
+      link.setAttribute('href',base.href); img.setAttribute('src',base.src); img.alt='Opening tree'; cap.textContent=base.cap;
+      note.textContent=f?'No separate tree for '+f+' (too few games).':'';
+    }
+  }
+  if(top.length<2){el.remove();return}
+  const draw=()=>{el.innerHTML=`<button class="${fam?'':'on'}" data-f="">All <small>${G.length}</small></button>`+top.map(([f,n])=>`<button class="${fam===f?'on':''}" data-f="${esc(f)}">${esc(f)} <small>${n}</small></button>`).join('')};
+  el.addEventListener('click',e=>{const b=e.target.closest('button'); if(!b)return; fam=b.dataset.f; draw(); setTree(fam); applyFilter()});
+  draw();
+})();
+$('#q').addEventListener('input',e=>{q=e.target.value; applyFilter()});
+$('#sort').addEventListener('change',e=>{sortk=e.target.value; applyFilter()});
+/* text size & dark mode */
+let fs=+store.get('fs')||21;
+const setFs=v=>{fs=Math.max(15,Math.min(34,v));document.documentElement.style.setProperty('--fs',fs+'px');store.set('fs',fs)};
+$('#fplus').onclick=()=>setFs(fs+2);$('#fminus').onclick=()=>setFs(fs-2);setFs(fs);
+const setDark=d=>{document.documentElement.dataset.theme=d?'dark':'light';$('#dark').textContent=d?'Light':'Dark';store.set('dark',d?'1':'0')};
+let dk=store.get('dark')==='1';setDark(dk);$('#dark').onclick=()=>{dk=!dk;setDark(dk)};
+(function(){var b=$('#bTog');b.onclick=function(){var h=document.body.classList.toggle('hideb');b.textContent=h?'Show board':'Hide board'}})();
+/* go */
+applyFilter();
+const hash=location.hash.match(/^#g(\d+)$/);
+if(hash&&G[+hash[1]]){ gotoGame(+hash[1],true) } else if(view.length){ go(view[0].i,0,true) } else render();
+})();
+</script>
+</body>
+</html>
